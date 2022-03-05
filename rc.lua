@@ -101,25 +101,24 @@ mysciencemenu = {
    { "KAlgebra", function() awful.spawn("kalgebra") end },
 }
 myeditormenu = {
-   { "Eclipse", function() awful.spawn("flatpak run org.eclipse.Javascript") end },
-   { "cod", function() awful.spawn("flatpak run com.vscodium.codium --no-sandbox") end },
+   { "code", function() awful.spawn("flatpak run com.vscodium.codium --no-sandbox") end },
    { "Emacs", function() awful.spawn("emacs") end },
-   { "leafpad", function() awful.spawn("leafpad") end },
    { "Klogg", function() awful.spawn("klogg") end },
+   { "leafpad", function() awful.spawn("leafpad") end },
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     {"Terminal", terminal },
                                     {"Science", mysciencemenu, os.getenv("HOME") .. "/Desktop/Dia.png"},
                                     {"Editors", myeditormenu},
+				    {"ghidra", "ghidra"},
+				    {"blender", "blender"},
                                     {"Browser", browser},
                                     {"File manager", file},
                                     {"GIMP", "gimp"},
-                                    {"VLC", "vlc"},
-				    {"ghidra", "ghidra"}
+                                    {"VLC", "vlc"}
                                   }
-                        }
-                        )
+                        })
 
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
@@ -566,14 +565,13 @@ awful.rules.rules = {
 		"vscodium",
 	},
         instance = {
-		"eclipse",
 		"emacs",
 		"klogg",
-          "geany",
-          "firefox",
-          "octave",
-          "scilab",
-          "sakura"
+		"geany",
+		"firefox",
+		"octave",
+		"scilab",
+		"sakura"
         },
       }, properties = { floating = false, maximized = false }},
       
@@ -586,7 +584,7 @@ awful.rules.rules = {
         role = {
           "GtkFileChooserDialog",
         },
-      }, properties = { floating = true, height = 360, placement = awful.placement.centered }},
+      }, properties = { floating = true, height = 550, placement = awful.placement.centered }},
 
     -- Add titlebars to normal clients and dialogs
     { rule_any = {type = { "normal", "dialog" }
