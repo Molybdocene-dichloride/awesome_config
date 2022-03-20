@@ -100,16 +100,23 @@ myawesomemenu = {
 mysciencemenu = {
 	{"Octave", science},
 	{"KAlgebra", "kalgebra"},
-	{"LO calc", "libreoffice --calc"},
+	
 	{"Zotero", "flatpak run org.zotero.Zotero"},
+	
+	{"Avogadro", "avogadro"},
+	
 	{"Minetest", "minetest"},
-	{"Minecraft (MultiMC)", os.getenv("HOME") .. "/UltimMC/UltimMC"},
+	{"Minecraft (MultiMC)", os.getenv("HOME") .. "/.minecraft/UltimMC"},
+
+	{"LO calc", "libreoffice --calc"}
 }
 myeditormenu = {
 	{"VSCode", "flatpak run com.vscodium.codium --no-sandbox"},
 	{"Emacs", uieditor},
 	{"Klogg", "klogg"},
 	{"leafpad", "leafpad"},
+
+	{"Libre Office", "libreoffice"},
 	{"LO writer", "libreoffice --writer"},
 	{"LO impress", "libreoffice --impress"},
 	{"-----"},
@@ -127,13 +134,14 @@ mymainmenu = awful.menu({ items = {
 		{"Science", mysciencemenu, debug.getinfo(1).short_src:sub(0, 24) .. "/science_logo.png"},
 		{"Editor", myeditormenu},
 		{"Internet", myinternetmenu},
+		{"qpdfview", "qpdfview-qt5"},
 		{"ghidra", "ghidra"},
 		{"Home", filemanager},
-		{"DeadbeeF", "deadbeef"},
+		{"DeaDBeeF", "deadbeef"},
 		{"VLC", "vlc"}
 	}
 })
-
+-- debug.getinfo(1).short_src:sub(0, 24) .. "/science_logo.png"
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 				     menu = mymainmenu })
 
@@ -186,7 +194,7 @@ local tasklist_buttons = gears.table.join(
 					      end
 					  end),
 		     awful.button({ }, 3, function()
-					      awful.menu.client_list({ theme = { width = 250 } })
+					      --awful.menu.client_list({ theme = { width = 250 } })
 					  end),
 		     awful.button({ }, 4, function ()
 					      awful.client.focus.byidx(1)
@@ -234,16 +242,22 @@ awful.screen.connect_for_each_screen(function(s)
 	--buttons = taglist_buttons
     --}
 
+    function list_update(w, buttons, label, data, objects)
+    -- call default widget drawing function
+    common.list_update(w, buttons, label, data, objects)
+    -- set widget size
+    --w:set_max_widget_size(20)
+end
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
 	screen	= s,
 	filter	= awful.widget.tasklist.filter.currenttags,
 	buttons = tasklist_buttons,
 	layout	 = {
-			spacing = 1,
-			forced_num_rows = 2,
-			layout	= wibox.layout.grid.horizontal
-		},
+		spacing = 1,
+		forced_num_rows = 2,
+		layout	= wibox.layout.grid.horizontal,
+	},
 	widget_template = {
 			{
 				{
@@ -256,7 +270,8 @@ awful.screen.connect_for_each_screen(function(s)
 						widget	= wibox.container.margin,
 					},
 					{
-						id     = 'text_role',
+					   fg = '#FFFFFF',
+					   id     = 'text_role',
 						widget = wibox.widget.textbox,
 					},
 					layout = wibox.layout.fixed.horizontal,
@@ -267,9 +282,11 @@ awful.screen.connect_for_each_screen(function(s)
 			},
 			forced_width	= 160,
 			forced_height	 = 20,
-			id     = 'background_role',
-			widget = wibox.container.background,
-		},
+			bg = '#111111',
+			--id     = 'background_role',
+			widget = wibox.container.background
+	},
+	--update_function = list_update,
     }
     
     s.mytasklist:buttons(gears.table.join())
