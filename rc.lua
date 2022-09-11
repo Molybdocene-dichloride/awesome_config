@@ -111,7 +111,7 @@ mysciencemenu = {
 	{"LO calc", "libreoffice --calc"}
 }
 myeditormenu = {
-	{"VSCode", "flatpak run com.vscodium.codium --no-sandbox"},
+	{"VSCode", "flatpak run com.vscodium.codium --no-sandbox --env=\"PATH=/run/host/usr/bin\" --filesystem=/run/host/usr/bin"},
 	{"Emacs", uieditor},
 	{"Klogg", "klogg"},
 	{"leafpad", "leafpad"},
@@ -592,6 +592,20 @@ awful.rules.rules = {
 	}
       }, properties = { floating = true, maximized = false, fullscreen = false }},
 
+    -- Add titlebars to normal clients and dialogs
+    { rule_any = {type = { "normal", "dialog" }
+      }, properties = { titlebars_enabled = true }
+    },
+    { rule_any = {type = { "dialog" }
+      }, properties = { placement = awful.placement.centered }
+    },
+    
+    { rule_any = {	
+	name = {
+	  "Kerbal Space Program",  -- xev.
+	},
+    }, properties = { floating = true, maximized = false, fullscreen = false,  width = 1024,  height = 576 }},
+    
 	{ rule_any = {
 	class = {
 		"vscodium",
@@ -599,7 +613,6 @@ awful.rules.rules = {
 	instance = {
 		"emacs",
 		"klogg",
-		"geany",
 		"firefox",
 		"octave",
 		"scilab",
@@ -612,24 +625,58 @@ awful.rules.rules = {
 	  "vlc",
 	},
       }, properties = { fullscreen = true }},
+
+      { rule_any = {
+	class = {
+		"vscodium",
+	},
+	instance = {
+	  "ghidra-Ghidra",
+	},
+      }, properties = { tag = "2" }},
+
+      { rule_any = {
+	instance = {
+	   "vlc",
+	   "deadbeef",
+	},
+      }, properties = { tag = "3" }},
+      
+      { rule_any = {
+	instance = {
+	  "ghidra-Ghidra",
+	},
+      },
+      rule_any = {
+	name = {
+	   "CodeBrowser.*",
+	},
+      }, properties = { maximized = true }},
+
+      { rule_any = {
+	instance = {
+	  "ghidra-Ghidra",
+	},
+      },
+      rule_any = {
+	name = {
+	   "win.*",
+	},
+      }, properties = { titlebars_enabled = false }}, --titlebar closing close a whole software
+      
       { rule_any = {
 	role = {
 	  "GtkFileChooserDialog",
 	},
       }, properties = { floating = true, height = 550, placement = awful.placement.centered }},
 
-    -- Add titlebars to normal clients and dialogs
-    { rule_any = {type = { "normal", "dialog" }
-      }, properties = { titlebars_enabled = true }
-    },
-    { rule_any = {type = { "dialog" }
-      }, properties = { placement = awful.placement.centered }
-    },
-
     -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --	 properties = { screen = 1, tag = "2" } },
-}
+      --{ rule_any = {
+	   --class = {
+	      --"ghidra-Ghidra",
+	   --},
+      --}, properties = { screen = "2", tag = "1" }},
+    }
 -- }}}
 
 -- {{{ Signals
