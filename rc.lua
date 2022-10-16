@@ -106,9 +106,7 @@ mysciencemenu = {
 	{"Avogadro", "avogadro"},
 	
 	{"Minetest", "minetest"},
-	{"Minecraft (MultiMC)", os.getenv("HOME") .. "/.minecraft/UltimMC"},
-
-	{"LO calc", "libreoffice --calc"}
+	{"MultiMC", os.getenv("HOME") .. "/.minecraft/UltimMC"},
 }
 myeditormenu = {
 	{"VSCode", "flatpak run com.vscodium.codium --no-sandbox --env=\"PATH=/run/host/usr/bin\" --filesystem=/run/host/usr/bin"},
@@ -117,8 +115,6 @@ myeditormenu = {
 	{"leafpad", "leafpad"},
 
 	{"Libre Office", "libreoffice"},
-	{"LO writer", "libreoffice --writer"},
-	{"LO impress", "libreoffice --impress"},
 	{"-----"},
 	{"blender", "blender"},
 	{"GIMP", "gimp"},
@@ -141,12 +137,12 @@ mymainmenu = awful.menu({ items = {
 		{"VLC", "vlc"}
 	}
 })
--- debug.getinfo(1).short_src:sub(0, 24) .. "/science_logo.png"
+
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 				     menu = mymainmenu })
 
 -- Menubar configuration
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
+menubar.utils.terminal = terminal
 -- }}}
 
 local kbdcfg1 = kbdcfg({type = "tui"})
@@ -235,12 +231,6 @@ awful.screen.connect_for_each_screen(function(s)
 			   awful.button({ }, 3, function () awful.layout.inc(-1) end),
 			   awful.button({ }, 4, function () awful.layout.inc( 1) end),
 			   awful.button({ }, 5, function () awful.layout.inc(-1) end)))
-    -- Create a taglist widget
-    --s.mytaglist = awful.widget.taglist {
-	--screen  = s,
-	--filter  = awful.widget.taglist.filter.all,
-	--buttons = taglist_buttons
-    --}
 
     function list_update(w, buttons, label, data, objects)
     -- call default widget drawing function
@@ -248,15 +238,16 @@ awful.screen.connect_for_each_screen(function(s)
     -- set widget size
     --w:set_max_widget_size(20)
 end
-    -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist {
-	screen	= s,
-	filter	= awful.widget.tasklist.filter.currenttags,
-	buttons = tasklist_buttons,
-	layout	 = {
-		spacing = 1,
-		forced_num_rows = 2,
-		layout	= wibox.layout.grid.horizontal,
+
+-- Create a tasklist widget
+s.mytasklist = awful.widget.tasklist {
+   screen	= s,
+   filter	= awful.widget.tasklist.filter.currenttags,
+   buttons = tasklist_buttons,
+   layout	 = {
+      spacing = 1,
+      forced_num_rows = 3,
+      layout	= wibox.layout.grid.horizontal,
 	},
 	widget_template = {
 			{
@@ -281,7 +272,7 @@ end
 				widget = wibox.container.margin
 			},
 			forced_width	= 160,
-			forced_height	 = 20,
+			forced_height	 = 18,
 			bg = '#111111',
 			--id     = 'background_role',
 			widget = wibox.container.background
@@ -292,14 +283,14 @@ end
     s.mytasklist:buttons(gears.table.join())
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height    = 40})
+    s.mywibox = awful.wibar({ position = "top", screen = s, height    = 54})
 
     -- Add widgets to the wibox
     s.mywibox:setup {
 	layout = wibox.layout.align.horizontal,
 	{ -- Left widgets
 	    layout = wibox.layout.fixed.horizontal,
-	    mylauncher,
+	    -- mylauncher,
 	    s.mypromptbox,
 	},
 	s.mytasklist, -- Middle widget
@@ -308,7 +299,7 @@ end
 	    mykeyboardlayout,
 	    wibox.widget.systray(),
 	    mytextclock,
-	    s.mylayoutbox,
+	    -- s.mylayoutbox,
 	},
     }
 end)
@@ -476,9 +467,6 @@ clientkeys = gears.table.join(
 	{description = "(un)maximize horizontally", group = "client"})
 )
 
--- Bind all key numbers to tags.
--- Be careful: we use keycodes to make it work on any keyboard layout.
--- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, 9 do
     globalkeys = gears.table.join(globalkeys,
 	-- View tag only.
@@ -580,29 +568,27 @@ awful.rules.rules = {
 	  "xtightvncviewer",
 	},
 
-	-- Note that the name property shown in xprop might be set slightly after creation of the client
-	-- and the name shown there might not match defined rules here.
 	name = {
-	  "Event Tester",  -- xev.
+	  "Event Tester",
 	},
 	role = {
 	  "AlarmWindow",  -- Thunderbird's calendar.
 	  "ConfigManager",  -- Thunderbird's about:config.
-	  "pop-up",	  -- e.g. Google Chrome's (detached) Developer Tools.
+	  -- "pop-up",	  -- e.g. Google Chrome's (detached) Developer Tools.
 	}
       }, properties = { floating = true, maximized = false, fullscreen = false }},
 
-    -- Add titlebars to normal clients and dialogs
-    { rule_any = {type = { "normal", "dialog" }
-      }, properties = { titlebars_enabled = true }
-    },
+    --{ rule_any = {type = { "normal", "dialog" }
+      --}, properties = { titlebars_enabled = false }
+    --},
+    
     { rule_any = {type = { "dialog" }
       }, properties = { placement = awful.placement.centered }
     },
     
     { rule_any = {	
 	name = {
-	  "Kerbal Space Program",  -- xev.
+	  "Kerbal Space Program",  -- mb not.
 	},
     }, properties = { floating = true, maximized = false, fullscreen = false,  width = 1024,  height = 576 }},
     
@@ -669,13 +655,6 @@ awful.rules.rules = {
 	  "GtkFileChooserDialog",
 	},
       }, properties = { floating = true, height = 550, placement = awful.placement.centered }},
-
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-      --{ rule_any = {
-	   --class = {
-	      --"ghidra-Ghidra",
-	   --},
-      --}, properties = { screen = "2", tag = "1" }},
     }
 -- }}}
 
