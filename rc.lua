@@ -14,19 +14,16 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
-
+-- Keyboard layouts library
 local kbdcfg = require("kbdcfg")
 
 -- Enable hotkeys help widget for VIM and other apps
--- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
 -- {{{ Error handling
--- Check if awesome encountered an error during startup and fell back to
--- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
     naughty.notify({ preset = naughty.config.presets.critical,
-		     title = "Oops, there were errors during startup!",
+		     title = "Fucked Errors happened during startup",
 		     text = awesome.startup_errors })
 end
 
@@ -34,12 +31,11 @@ end
 do
 	local in_error = false
 	awesome.connect_signal("debug::error", function (err)
-		-- Make sure we don't go into an endless error loop
 		if in_error then return end
 		in_error = true
 
 		naughty.notify({ preset = naughty.config.presets.critical,
-			 title = "Oops, an error happened!",
+			 title = "Fucked Errors happened",
 			 text = tostring(err) })
 		in_error = false
 	end)
@@ -50,21 +46,25 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
--- This is used later as the default terminal and editor to run.
+-- This is used later as the default apps for actions.
 terminal = "sakura"
-massiveeditor = "vscodium"
-uieditor = "emacs"
+
 editor = os.getenv("EDITOR") or "nano"
-browser = "firefox"
-filemanager = "thunar"
-science = "octave --gui"
 editor_cmd = terminal .. " -e " .. editor
+uieditor = "emacs"
+massiveeditor = "com.vscodium.codium"
+mcviewer = "ghidra"
+
+browser = "firefox"
+
+keymanager = "keepassxc"
+filemanager = "thunar"
+referencemanager = "org.zotero.Zotero"
+proccessmanager = "htop"
+
+science = "octave --gui"
 
 -- Default modkey.
--- Usually, Mod4 is the key with a logo between Control and Alt.
--- If you do not like this or do not have such a key,
--- I suggest you to remap Mod4 to another key using xmodmap or other tools.
--- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
@@ -89,7 +89,7 @@ awful.layout.layouts = {
 -- }}}
 
 -- {{{ Menu
--- Create a launcher widget and a main menu
+-- Create a launcher widget and menus
 myawesomemenu = {
 	{"hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
 	{"manual", terminal .. " -e man awesome" },
@@ -319,10 +319,29 @@ root.buttons(gears.table.join(
 -- {{{ Key bindings
 globalkeys = gears.table.join(
 
+        awful.key({modkey, "Mod1"}, "b",	function() awful.spawn(browser) end,
+	   {description="Run a "..browser, group="software"}),
+	awful.key({modkey, "Mod1"}, "e",	function() awful.spawn(uieditor) end,
+	   {description="Run a "..uieditor, group="software"}),
+	awful.key({modkey, "Mod1"}, "g",	function() awful.spawn("ghidra") end,
+	   {description="Run a ghidra", group="software"}),
+	awful.key({modkey, "Mod1"}, "m",	function() awful.spawn("flatpak run "..massiveeditor) end,
+	   {description="Run a "..massiveeditor, group="software"}),
+	awful.key({modkey, "Mod1"}, "r",	function() awful.spawn("flatpak run "..referencemanager) end,
+	   {description="Run a "..referencemanager, group="software"}),
+	awful.key({modkey, "Mod1"}, "k",	function() awful.spawn("keepassxc") end,
+	    {description="Run a "..keymanager, group="software"}),
+	awful.key({modkey, "Mod1"}, "p",	function() awful.spawn(terminal.." -e "..proccessmanager) end,
+	   {description="Run a "..proccessmanager, group="software"}),
+	awful.key({modkey, "Mod1"}, "f",	function() awful.spawn(filemanager) end,
+	    {description="Run a "..filemanager, group="software"}),
+	
 	awful.key({ "Shift",	       }, "Alt_L",	kbdcfg1.switch_next,
-	      {description="Switch language", group="lang"}),
+	   {description="Switch language", group="lang"}),
+	
 	awful.key({ }, "Print",	function() awful.spawn("xfce4-screenshooter") end,
-	      {description="Printscreen", group="print"}),
+	   {description="Printscreen", group="print"}),
+	
 	awful.key({ modkey,		  }, "s",      hotkeys_popup.show_help,
 	      {description="show help", group="awesome"}),
 	awful.key({ modkey,		  }, "Left",   awful.tag.viewprev,
@@ -442,8 +461,7 @@ clientkeys = gears.table.join(
 	      {description = "toggle keep on top", group = "client"}),
     awful.key({ modkey,		  }, "n",
 	function (c)
-	    -- The client currently has the input focus, so it cannot be
-	    -- minimized, since minimized clients can't have the focus.
+	    
 	    c.minimized = true
 	end ,
 	{description = "minimize", group = "client"}),
@@ -533,9 +551,8 @@ root.keys(globalkeys)
 -- }}}
 
 -- {{{ Rules
--- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
-    -- All clients will match this rule.
+   --All
     { rule = { },
       properties = { border_width = beautiful.border_width,
 		     border_color = beautiful.border_normal,
@@ -556,6 +573,7 @@ awful.rules.rules = {
 	  "pinentry",
 	},
 	class = {
+	  "Scilab",
 	  "Arandr",
 	  "Blueman-manager",
 	  "Gpick",
@@ -569,6 +587,8 @@ awful.rules.rules = {
 	},
 
 	name = {
+	  "Графическое окно 1",
+	  "Графическое окно 2",
 	  "Event Tester",
 	},
 	role = {
@@ -585,14 +605,16 @@ awful.rules.rules = {
     { rule_any = {type = { "dialog" }
       }, properties = { placement = awful.placement.centered }
     },
-    
+
+    --Kerbals
     { rule_any = {	
 	name = {
-	  "Kerbal Space Program",  -- mb not.
+	  "Kerbal Space Program",  -- mb not. Not 2.
 	},
     }, properties = { floating = true, maximized = false, fullscreen = false,  width = 1024,  height = 576 }},
+
     
-	{ rule_any = {
+    { rule_any = {
 	class = {
 		"vscodium",
 	},
@@ -601,17 +623,19 @@ awful.rules.rules = {
 		"klogg",
 		"firefox",
 		"octave",
-		"scilab",
+		
 		"sakura"
 	},
       }, properties = { floating = false, maximized = false }},
-      
+
+      --Not used
       { rule_any = {
 	instance = {
 	  "vlc",
 	},
       }, properties = { fullscreen = true }},
 
+      --tag for something
       { rule_any = {
 	class = {
 		"vscodium",
@@ -621,6 +645,7 @@ awful.rules.rules = {
 	},
       }, properties = { tag = "2" }},
 
+      --Not used
       { rule_any = {
 	instance = {
 	   "vlc",
@@ -659,7 +684,6 @@ awful.rules.rules = {
 -- }}}
 
 -- {{{ Signals
--- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c)
     -- Set the windows at the slave,
     -- i.e. put it at the end of others instead of setting it master.
@@ -673,7 +697,7 @@ client.connect_signal("manage", function (c)
     end
 end)
 
--- Add a titlebar if titlebars_enabled is set to true in the rules.
+-- Remove
 client.connect_signal("request::titlebars", function(c)
     -- buttons for the titlebar
     local buttons = gears.table.join(
