@@ -53,7 +53,10 @@ editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 uieditor = "emacs"
 massiveeditor = "com.vscodium.codium"
+imageeditor = "gimp"
+
 mcviewer = "ghidra"
+docviewer = "qpdfview-qt5"
 
 browser = "firefox"
 
@@ -62,7 +65,11 @@ filemanager = "thunar"
 referencemanager = "org.zotero.Zotero"
 proccessmanager = "htop"
 
-science = "octave --gui"
+avogadro = "org.openchemistry.Avogadro2"
+
+minecraft = "UltimMC"
+minecraftcomm = os.getenv("HOME") .. "/.minecraft"..minecraft
+ksp = "kerbal space program"
 
 -- Default modkey.
 modkey = "Mod4"
@@ -98,21 +105,19 @@ myawesomemenu = {
 	{"quit", function() awesome.quit() end },
 }
 mysciencemenu = {
-	{"Octave", science},
 	{"KAlgebra", "kalgebra"},
 	
-	{"Zotero", "flatpak run org.zotero.Zotero"},
+	{"Zotero", "flatpak run"..referencemanager},
 	
-	{"Avogadro", "avogadro"},
+	{"Avogadro", "flatpak run"..avogadro},
 	
 	{"Minetest", "minetest"},
-	{"MultiMC", os.getenv("HOME") .. "/.minecraft/UltimMC"},
+	{"MultiMC", minecraftcomm},
 }
 myeditormenu = {
-	{"VSCode", "flatpak run com.vscodium.codium --no-sandbox --env=\"PATH=/run/host/usr/bin\" --filesystem=/run/host/usr/bin"},
+	{"VSCode", "flatpak run com.vscodium.codium --no-sandbox"},
 	{"Emacs", uieditor},
 	{"Klogg", "klogg"},
-	{"leafpad", "leafpad"},
 
 	{"Libre Office", "libreoffice"},
 	{"-----"},
@@ -334,7 +339,25 @@ globalkeys = gears.table.join(
 	awful.key({modkey, "Mod1"}, "p",	function() awful.spawn(terminal.." -e "..proccessmanager) end,
 	   {description="Run a "..proccessmanager, group="software"}),
 	awful.key({modkey, "Mod1"}, "f",	function() awful.spawn(filemanager) end,
-	    {description="Run a "..filemanager, group="software"}),
+	   {description="Run a "..filemanager, group="software"}),
+	awful.key({modkey, "Mod1"}, "l",	function() awful.spawn("libreoffice") end,
+	   {description="Run a ".."libreoffice", group="software"}),
+	awful.key({modkey, "Mod1"}, "i",	function() awful.spawn(imageeditor) end,
+	   {description="Run a "..imageeditor, group="software"}),
+	awful.key({modkey, "Mod1"}, "v",	function() awful.spawn("blender") end,
+	   {description="Run a ".."blender", group="software"}),
+	awful.key({modkey, "Mod1"}, "c",	function() awful.spawn(minecraftcomm) end,
+	   {description="Run a "..minecraft, group="software"}),
+	awful.key({modkey, "Mod1"}, "t",	function() awful.spawn(minetest) end,
+	   {description="Run a ".."minetest", group="software"}),
+	awful.key({modkey, "Mod1"}, "s",	function() awful.spawn("KSP.x86_64") end,
+	   {description="Run a "..ksp, group="software"}),
+	awful.key({modkey, "Mod1"}, "a",	function() awful.spawn("kalgebra") end,
+	   {description="Run a ".."kalgebra", group="software"}),
+	awful.key({modkey, "Mod1"}, "o",	function() awful.spawn("flatpak run"..avogadro) end,
+	   {description="Run a "..avogadro, group="software"}),
+	awful.key({modkey, "Mod1"}, "z",	function() awful.spawn("palemoon") end,
+	   {description="Run a ".."palemoon", group="software"}),
 	
 	awful.key({ "Shift",	       }, "Alt_L",	kbdcfg1.switch_next,
 	   {description="Switch language", group="lang"}),
