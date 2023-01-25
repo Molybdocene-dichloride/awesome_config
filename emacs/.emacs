@@ -1,4 +1,8 @@
-;; .emacs
+;;; .emacs --- .emacs file
+;;; Commentary:
+;; My bad code
+
+;;; Code:
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -44,11 +48,13 @@
 ;; Tex
 
 (add-hook 'TeX-mode-hook
-      '(lambda () 
-         (set (make-local-variable 'TeX-engine) 'luatex)))
+      '(lambda ()
+	 (set (make-local-variable 'TeX-engine) 'luatex)))
 
 ;; (treesit-available-p)
 
 ;; flycheck
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
+
+;;;.emacs

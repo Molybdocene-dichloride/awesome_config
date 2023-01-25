@@ -1,0 +1,148 @@
+% Created 2023-01-25 Ср 15:43
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 28.2 (Org mode 9.5.5)}, 
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+
+\section{Ferret \textbf{xx}}
+\label{sec:org1f659b5}
+\subsection{а}
+\label{sec:orga452576}
+\subsubsection{a}
+\label{sec:orgce8ae17}
+\begin{enumerate}
+\item в
+\label{sec:orgf8dcbbf}
+\end{enumerate}
+\subsubsection{rf}
+\label{sec:orgac5b68e}
+\begin{enumerate}
+\item q
+\label{sec:org63f1811}
+\item a
+\label{sec:orgedcffb3}
+\item 1
+\label{sec:org7fcd3aa}
+\end{enumerate}
+\subsection{ыы}
+\label{sec:org05b7adc}
+xDEADLINE: \textit{<2023-01-23 Пн>}
+:Effort:   4
+0:01:15
+\begin{description}
+\item[{0:02:07}] dre
+\item[{0:02:33}] 
+
+\item[{0:02:35}] 
+
+
+\item про
+\begin{itemize}
+\item дизибиздис
+\item фретыч
+\end{itemize}
+\end{description}
+
+\begin{center}
+\begin{tabular}{ll}
+d & dd\\
+d dd & \\
+d & \\
+\hline
+dd & \\
+d & \\
+\end{tabular}
+\end{center}
+
+\url{https://linux.org.ru}
+
+\ref{sec:org1f659b5}
+
+\label{org8dec48d}
+\label{org9acfb32}did
+
+\ref{org8dec48d}
+
+ddi
+
+\href{https://linux.org.ru}{de}
+
+\textit{<2204-01-20 Пт>--<2023-01-25 Ср> } - 66104d
+
+
+\textit{<2023-01-23 Пн>}
+
+Fri
+\textit{<2023-01-27 Пт>}
+
+\subsection{{\bfseries\sffamily TODO} у}
+\label{sec:org9f013ef}
+\subsubsection{{\bfseries\sffamily TODO} s}
+\label{sec:org17ee70e}
+\subsubsection{{\bfseries\sffamily TODO} d}
+\label{sec:org377ef12}
+
+\section{{\bfseries\sffamily TODO} s}
+\label{sec:orgb169f58}
+\subsection{{\bfseries\sffamily TODO} re}
+\label{sec:orgb9fc6db}
+\begin{itemize}
+\item State "DONE"       from "TODO"       \textit{[2023-01-24 Вт 20:14] } \\
+ы
+\end{itemize}
+\subsection{{\bfseries\sffamily TODO} tr\hfill{}\textsc{ы}}
+\label{sec:org0c74139}
+\begin{itemize}
+\item State "DONE"       from "TODO"       \textit{[2023-01-24 Вт 20:16]}
+\item State "TODO"       from              \textit{[2023-01-24 Вт 20:15] } \\
+ф
+\end{itemize}
+
+
+\subsection{{\bfseries\sffamily TODO} d}
+\label{sec:org6b42e65}
+\subsubsection{{\bfseries\sffamily DONE} s [0/0]}
+\label{sec:orgd7e8f14}
+
+\subsubsection{{\bfseries\sffamily TODO} a [0/0]}
+\label{sec:org2c28e6c}
+
+\subsubsection{xa}
+\label{sec:org71fb1bf}
+\begin{itemize}
+\item[{$\boxminus$}] s
+\begin{itemize}
+\item[{$\boxminus$}] d
+\item[{$\boxminus$}] d
+\end{itemize}
+\end{itemize}
+\begin{enumerate}
+\item w\hfill{}\textsc{fu}
+\label{sec:org287d757}
+
+\item d\hfill{}\textsc{@f}
+\label{sec:org3a62974}
+\end{enumerate}
+\end{document}
