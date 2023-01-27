@@ -47,9 +47,9 @@ end
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default apps for actions.
-terminal = "sakura"
+terminal = "urxvt"
 
-editor = os.getenv("EDITOR") or "nano"
+editor = os.getenv("EDITOR") or "emacs"
 editor_cmd = terminal .. " -e " .. editor
 uieditor = "emacs"
 massiveeditor = "com.vscodium.codium"

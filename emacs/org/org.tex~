@@ -1,4 +1,4 @@
-% Created 2023-01-25 Ср 15:43
+% Created 2023-01-25 Ср 16:17
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -13,41 +13,42 @@
 \usepackage{capt-of}
 \usepackage{hyperref}
 \date{\today}
-\title{}
+\title{ferretz}
 \hypersetup{
  pdfauthor={},
- pdftitle={},
+ pdftitle={ferretz},
  pdfkeywords={},
  pdfsubject={},
  pdfcreator={Emacs 28.2 (Org mode 9.5.5)}, 
  pdflang={English}}
 \begin{document}
 
+\maketitle
 \tableofcontents
 
 
 \section{Ferret \textbf{xx}}
-\label{sec:org1f659b5}
-\subsection{а}
-\label{sec:orga452576}
+\label{sec:orgadcf41c}
+\subsection{а \(\Gamma\) \(\zeta\)}
+\label{sec:org736d836}
 \subsubsection{a}
-\label{sec:orgce8ae17}
+\label{sec:orgb71e2d5}
 \begin{enumerate}
 \item в
-\label{sec:orgf8dcbbf}
+\label{sec:orgabcd718}
 \end{enumerate}
 \subsubsection{rf}
-\label{sec:orgac5b68e}
+\label{sec:org3c94ae5}
 \begin{enumerate}
 \item q
-\label{sec:org63f1811}
+\label{sec:org4910f63}
 \item a
-\label{sec:orgedcffb3}
+\label{sec:org9b52b1e}
 \item 1
-\label{sec:org7fcd3aa}
+\label{sec:orgbbcc192}
 \end{enumerate}
 \subsection{ыы}
-\label{sec:org05b7adc}
+\label{sec:orgd45d519}
 xDEADLINE: \textit{<2023-01-23 Пн>}
 :Effort:   4
 0:01:15
@@ -60,8 +61,8 @@ xDEADLINE: \textit{<2023-01-23 Пн>}
 
 \item про
 \begin{itemize}
-\item дизибиздис
-\item фретыч
+\item дизи\textsubscript{биздис}
+\item фрет\textsuperscript{ыч}
 \end{itemize}
 \end{description}
 
@@ -78,12 +79,12 @@ d & \\
 
 \url{https://linux.org.ru}
 
-\ref{sec:org1f659b5}
+\ref{sec:orgadcf41c}
 
-\label{org8dec48d}
-\label{org9acfb32}did
+\label{org7c98720}
+\label{org025d546}did
 
-\ref{org8dec48d}
+\ref{org7c98720}
 
 ddi
 
@@ -98,22 +99,22 @@ Fri
 \textit{<2023-01-27 Пт>}
 
 \subsection{{\bfseries\sffamily TODO} у}
-\label{sec:org9f013ef}
+\label{sec:org5834d4e}
 \subsubsection{{\bfseries\sffamily TODO} s}
-\label{sec:org17ee70e}
+\label{sec:org23af851}
 \subsubsection{{\bfseries\sffamily TODO} d}
-\label{sec:org377ef12}
+\label{sec:org7528f2e}
 
 \section{{\bfseries\sffamily TODO} s}
-\label{sec:orgb169f58}
+\label{sec:orgc951b84}
 \subsection{{\bfseries\sffamily TODO} re}
-\label{sec:orgb9fc6db}
+\label{sec:orga962f0b}
 \begin{itemize}
 \item State "DONE"       from "TODO"       \textit{[2023-01-24 Вт 20:14] } \\
 ы
 \end{itemize}
 \subsection{{\bfseries\sffamily TODO} tr\hfill{}\textsc{ы}}
-\label{sec:org0c74139}
+\label{sec:org5bf56b0}
 \begin{itemize}
 \item State "DONE"       from "TODO"       \textit{[2023-01-24 Вт 20:16]}
 \item State "TODO"       from              \textit{[2023-01-24 Вт 20:15] } \\
@@ -122,15 +123,15 @@ Fri
 
 
 \subsection{{\bfseries\sffamily TODO} d}
-\label{sec:org6b42e65}
+\label{sec:org1a6a3d6}
 \subsubsection{{\bfseries\sffamily DONE} s [0/0]}
-\label{sec:orgd7e8f14}
+\label{sec:org566fc43}
 
 \subsubsection{{\bfseries\sffamily TODO} a [0/0]}
-\label{sec:org2c28e6c}
+\label{sec:org6363cdf}
 
 \subsubsection{xa}
-\label{sec:org71fb1bf}
+\label{sec:orgb427ad2}
 \begin{itemize}
 \item[{$\boxminus$}] s
 \begin{itemize}
@@ -140,9 +141,9 @@ Fri
 \end{itemize}
 \begin{enumerate}
 \item w\hfill{}\textsc{fu}
-\label{sec:org287d757}
+\label{sec:orgec5b5e5}
 
 \item d\hfill{}\textsc{@f}
-\label{sec:org3a62974}
+\label{sec:org1e03ca9}
 \end{enumerate}
 \end{document}

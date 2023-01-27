@@ -13,12 +13,14 @@
  '(diff-switches "-u")
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(yasnippet-snippets yasnippet cape company cmake-mode flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref markdown-mode auctex cdlatex projectile treemacs treemacs-projectile)))
+   '(yasnippet-snippets yasnippet dtrt-indent cape company cmake-mode cmake-font-lock cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref markdown-mode auctex cdlatex projectile treemacs treemacs-projectile)))
 
 ;;; uncomment for CJK utf-8 support for non-Asian users
 ;; (require 'un-define)
 
 (require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
@@ -50,11 +52,18 @@
 (add-hook 'TeX-mode-hook
       '(lambda ()
 	 (set (make-local-variable 'TeX-engine) 'luatex)))
+         (setq TeX-view-program-selection '(output-pdf "zathura") )
 
 ;; (treesit-available-p)
 
 ;; flycheck
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; dtrt
+
+(add-hook 'prog-mode-hook #'dtrt-indent-mode)
+
+(add-hook 'TEX-mode-hook #'dtrt-indent-mode)
 
 ;;;.emacs
