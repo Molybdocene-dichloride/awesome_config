@@ -56,16 +56,17 @@ massiveeditor = "com.vscodium.codium"
 imageeditor = "gimp"
 
 mcviewer = "ghidra"
-docviewer = "qpdfview-qt5"
+docviewer = "zathura"
 
 browser = "firefox"
 
 keymanager = "keepassxc"
 filemanager = "thunar"
-referencemanager = "org.zotero.Zotero"
+referencemanager = "Zotero"
+flatreferencemanager = "org.zotero"..referencemanager
 proccessmanager = "htop"
 
-avogadro = "org.openchemistry.Avogadro2"
+avogadro = "avogadro2"
 
 minecraft = "UltimMC"
 minecraftcomm = os.getenv("HOME") .. "/.minecraft"..minecraft
@@ -73,6 +74,17 @@ ksp = "kerbal space program"
 
 -- Default modkey.
 modkey = "Mod4"
+
+-- spawn clipit
+
+os.execute("ps -e | grep clipit > /tmp/clipit")
+ferret = io.popen("cat /tmp/clipit"):read("*all")
+
+if ferret:find("clipit") == nil then
+    awful.spawn("clipit")
+end
+
+os.remove("/tmp/clipit")
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -109,13 +121,12 @@ mysciencemenu = {
 	
 	{"Zotero", "flatpak run"..referencemanager},
 	
-	{"Avogadro", "flatpak run"..avogadro},
+	{"Avogadro", avogadro},
 	
 	{"Minetest", "minetest"},
 	{"MultiMC", minecraftcomm},
 }
 myeditormenu = {
-	{"VSCode", "flatpak run com.vscodium.codium --no-sandbox"},
 	{"Emacs", uieditor},
 	{"Klogg", "klogg"},
 
@@ -302,7 +313,7 @@ s.mytasklist = awful.widget.tasklist {
 	{ -- Right widgets
 	    layout = wibox.layout.fixed.horizontal,
 	    mykeyboardlayout,
-	    wibox.widget.systray(),
+	    -- wibox.widget.systray(),
 	    mytextclock,
 	    -- s.mylayoutbox,
 	},
@@ -332,9 +343,9 @@ globalkeys = gears.table.join(
 	   {description="Run a ghidra", group="software"}),
 	awful.key({modkey, "Mod1"}, "m",	function() awful.spawn("flatpak run "..massiveeditor) end,
 	   {description="Run a "..massiveeditor, group="software"}),
-	awful.key({modkey, "Mod1"}, "r",	function() awful.spawn("flatpak run "..referencemanager) end,
+	awful.key({modkey, "Mod1"}, "r",	function() awful.spawn("flatpak run "..flatreferencemanager) end,
 	   {description="Run a "..referencemanager, group="software"}),
-	awful.key({modkey, "Mod1"}, "k",	function() awful.spawn("keepassxc") end,
+	awful.key({modkey, "Mod1"}, "k",	function() awful.spawn(keymanager) end,
 	    {description="Run a "..keymanager, group="software"}),
 	awful.key({modkey, "Mod1"}, "p",	function() awful.spawn(terminal.." -e "..proccessmanager) end,
 	   {description="Run a "..proccessmanager, group="software"}),
