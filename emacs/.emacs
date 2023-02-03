@@ -13,7 +13,7 @@
  '(diff-switches "-u")
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(yasnippet-snippets yasnippet dtrt-indent cape company cmake-mode cmake-font-lock cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref markdown-mode auctex cdlatex projectile treemacs treemacs-projectile)))
+   '(use-package yasnippet-snippets yasnippet dtrt-indent cape company cmake-mode cmake-font-lock cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref markdown-mode auctex cdlatex projectile treemacs treemacs-projectile)))
 
 ;;; uncomment for CJK utf-8 support for non-Asian users
 ;; (require 'un-define)
@@ -47,7 +47,7 @@
 (global-set-key (kbd "C-A-z") 'undo-fu-only-redo)
 (put 'upcase-region 'disabled nil)
 
-;; Tex
+;; TeX
 
 (add-hook 'TeX-mode-hook
       '(lambda ()
@@ -65,7 +65,7 @@
 
 (add-hook 'prog-mode-hook #'dtrt-indent-mode)
 
-(add-hook 'TEX-mode-hook #'dtrt-indent-mode)
+(add-hook 'TeX-mode-hook #'dtrt-indent-mode)
 
 ;; Org
 
@@ -104,10 +104,57 @@
 						       ("~/Desktop/org/day.org" :maxlevel . 2) ;;; Daily
 						       ("~/Desktop/org/university.org" :maxlevel . 2) ;;; University
 			    ))
-			    (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "EDU(e)" "|" "DONE(d)" "CANCELLED(c)")))
-			    (setq org-tag-persistent-alist '("project" "maybe" "no_deadline" "delegating" "low_priority" "medium_priority" "high_priority" "extreme_priority" "@imbeciles" "@travelling" "@shopping" "@document" "@science" "@education" "@university" "@programming" "@toolchain" "@feature" "@bugfix" "@project_support" "@free_software" "@open_source" "@reverse_engeniring" "@minecraft" "@minetest" "@horizon_modding_kernel" "@horizon" "@inner_core" "mineprogramming" "MineExplorer" "ZhekaSmirnov" "VSDum" "viacheslav_veshnyakov" "konstantin_vorontsov" "shkaeva_natalia" "sevastyanova_julia" "kholmova_marina" "khadyko_igor" "plakhin_"))
-			    (setq org-tags-exclude-from-inheritance '("project" "low_priority" "medium_priority" "high_priority" "extreme_priority" "delegating"))
-			    (message "der %s" org-todo-keywords)
+			    (setq org-todo-keywords '((sequence "TODO(t)" "WAIT(w@/!)" "EDU(e@/!)" "|" "DONE(d@/!)" "CANCELED(c@/!)" "TRASH(b@)" "MAYBE(b@)" "REFERENCE(b@)")))
+			    (setq org-tag-persistent-alist '(("project" . nil) ("maybe" . nil) ("no_deadline" . nil)  ("delegating" . nil) ("low_priority" . nil) ("medium_priority" . nil) ("high_priority" . nil) ("extreme_priority" . nil) ("@imbeciles" . nil) ("@travelling" . nil) ("@shopping" . nil) ("@document" . nil) ("@science" . nil) ("@education" . nil) ("@university" . nil) ("@programming" . nil) ("@toolchain" . nil) ("@feature" . nil) ("@bugfix" . nil) ("@project_support" . nil) ("@free_software" . nil) ("@open_source" . nil) ("@reverse_engeniring" . nil) ("@minecraft" . nil) ("@minetest" . nil) ("@horizon" . nil) ("@inner_core" . nil) ("mineprogramming" . nil) ("MineExplorer" . nil) ("ZhekaSmirnov" . nil) ("VSDum" . nil) ("viacheslav_veshnyakov" . nil) ("konstantin_vorontsov" . nil) ("natalia_shkaeva" . nil) ("julia_sevastyanova" . nil) ("marina_kholmova" . nil) ("igor_khadyko" . nil) ("_plakhin" . nil)))
+			    (setq org-tags-exclude-from-inheritance '("project" "delegating"))
+			    (setq ml-priority-low 10)
+			    (setq ml-priority-medium 20)
+			    (setq ml-priority-high 30)
+			    (setq ml-priority-extreme 40)
+			    (setq org-priority-highest 50)
+			    (setq org-priority-lowest 1)
+			    (setq org-priority-default 20)
 			  )
 )
+
+;; projectile
+
+(projectile-mode +1)
+
+(define-key projectile-mode-map (kbd "C-c q") 'projectile-command-map)
+
+(setq projectile-enable-caching t)
+
+(projectile-register-project-type 'innercore '("make.json" "toolchain"))
+;; Treemacs
+
+(add-hook 'imenu-mode-hook (setq imenu-auto-rescan t))
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-wide-toggle-width 80
+	  treemacs-width 24
+	  treemacs-indentation 1
+    )
+  )
+)
+;; (add-hook 'emacs-startup-hook (message("d %s" treemacs-indentation)))
+;; (add-hook 'treemacs-mode-hook (setq treemacs-indentation 2))
+
+(add-hook 'emacs-startup-hook 'treemacs)
+;; (add-hook 'emacs-startup-hook 'treemacs-project-follow-mode)
+(add-hook 'emacs-startup-hook 'treemacs-tag-follow-mode)
+
+;; (setq treemacs-tag-follow-mode t)
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
+
 ;;;.emacs
