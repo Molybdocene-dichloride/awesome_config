@@ -334,7 +334,7 @@ root.buttons(gears.table.join(
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
-
+        
         awful.key({modkey, "Mod1"}, "b",	function() awful.spawn(browser) end,
 	   {description="Run a "..browser, group="software"}),
 	awful.key({modkey, "Mod1"}, "e",	function() awful.spawn(uieditor) end,
@@ -477,6 +477,33 @@ globalkeys = gears.table.join(
 )
 
 clientkeys = gears.table.join(
+    -- modkey+Left/Right: move client to prev/next tag
+    awful.key({ modkey, "Control" }, "Left",
+	function ()
+	    -- get current tag
+	    local t = client.focus and client.focus.first_tag or nil
+	    if t == nil then
+		return
+	    end
+	    -- get previous tag (modulo 9 excluding 0 to wrap from 1 to 9)
+	    local tag = client.focus.screen.tags[(t.name - 2) % 9 + 1]
+	    awful.client.movetotag(tag)
+	end,
+        {description = "move client to previous tag", group = "layout"}),
+
+    awful.key({ modkey, "Control" }, "Right",
+	function ()
+	    -- get current tag
+	    local t = client.focus and client.focus.first_tag or nil
+	    if t == nil then
+		return
+	    end
+	    -- get next tag (modulo 9 excluding 0 to wrap from 9 to 1)
+	    local tag = client.focus.screen.tags[(t.name % 9) + 1]
+	    awful.client.movetotag(tag)
+	end,
+        {description = "move client to next tag", group = "layout"}),
+
     awful.key({ modkey,		  }, "f",
 	function (c)
 	    c.fullscreen = not c.fullscreen
