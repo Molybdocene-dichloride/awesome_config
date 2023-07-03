@@ -49,10 +49,17 @@
 
 ;; TeX
 
+(print (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
+(setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
+
 (add-hook 'TeX-mode-hook
       '(lambda ()
 	 (set (make-local-variable 'TeX-engine) 'luatex)
-         (setq TeX-view-program-selection '(output-pdf "zathura"))
+	 (setq TeX-view-program-selection '(output-pdf "zathura"))
+	 (add-to-list
+	  'TeX-expand-list
+	  (list "%(extraopts)"
+		(lambda nil TeX-command-extra-options)))
       )
 )
 ;; (treesit-available-p)
