@@ -1,0 +1,1 @@
+awesome/rc.lua~/.config/awesome/rc.lua

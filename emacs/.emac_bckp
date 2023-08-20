@@ -5,7 +5,7 @@
 ;;; Code:
 
 (custom-set-variables
- ;; custom-set-variabltes was added by Custom.
+ ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
@@ -13,18 +13,16 @@
  '(diff-switches "-u")
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(use-package yasnippet-snippets yasnippet dtrt-indent cape company cmake-mode cmake-font-lock cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref markdown-mode auctex auctex-latexmk cdlatex preview-latex projectile treemacs treemacs-projectile eglot eglot-jl)
- )
-)
+   '(use-package yasnippet-snippets yasnippet dtrt-indent cape company cmake-mode cmake-font-lock cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref markdown-mode auctex cdlatex projectile treemacs treemacs-projectile)))
 
 ;;; uncomment for CJK utf-8 support for non-Asian users
 ;; (require 'un-define)
 
 (require 'package)
- (add-to-list 'package-archives
+(add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
-;; (add-to-list 'package-archives
-;;             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 
 (setq frame-resize-pixelwise t)
@@ -38,13 +36,6 @@
 
 (reverse-im-mode t)
 
-;; RC
-
-(let ((path (shell-command-to-string "source ~/.bashrc; echo -n $AsyPATH")))
-  (print "AsyPATH")
-  (setenv "AsyPATH" path)
-)
-
 ;; Keys
 
 (reverse-im-activate "russian-computer")
@@ -56,91 +47,24 @@
 (global-set-key (kbd "C-A-z") 'undo-fu-only-redo)
 (put 'upcase-region 'disabled nil)
 
-;; flycheck
-
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(add-hook 'julia-mode-hook #'flymake-mode)
-
-;; eglot
-
-(set 'eglot-connect-timeout 250)
-
-;; julia
-
-;; (package-generate-autoloads "flycheck-julia" "~/.emacs.d/elpa/flycheck-julia-0.1.1/")
-(eglot-jl-init)
-(add-hook 'julia-mode-hook 'eglot-ensure)
-;; (add-to-list 'flycheck-global-modes 'julia-mode)
-
-;; latexmk
-
-
 ;; TeX
-
-(print (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
-(setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
-
-(defun ltxmk ()
-  (interactive)
-    (TeX-save-document (TeX-master-file))
-    (TeX-command "LatexMk" 'TeX-master-file -1)
-)
-
-(defun ltxmkl ()
-  (interactive)
-    (TeX-save-document (TeX-master-file))
-    (TeX-command "LatexMk" 'TeX-local-file -1)
-)
 
 (add-hook 'TeX-mode-hook
       '(lambda ()
-	 (auctex-latexmk-setup)
 	 (set (make-local-variable 'TeX-engine) 'luatex)
-	 (setq TeX-command-default "LatexMk")
-	 (add-to-list 'TeX-view-program-list '("zathura" "zathura %o"))
-	 (setq TeX-view-program-selection '((output-pdf "zathura")))
-	 (local-set-key (kbd "C-c C-g C-g") 'ltxmk)
-	 ;; (local-set-key (kbd "C-c C-g C-v") 'ltxmkv)
-	 ;; (local-set-key (kbd "C-c C-g C-l") 'ltxmkl)
-	 ;; (local-set-key (kbd "C-c C-g C-w") 'ltxmkl)
-	 
-	 (setq TeX-electric-math (cons "$" "$"))
-	 (setq LaTeX-electric-left-right-brace t)
-	 (setq TeX-insert-braces nil)
-	 
-	 (setq LaTeX-default-width "\textwidth")
-	 (setq LaTeX-math-abbrev-prefix ":")
-
-	 (setq LaTeX-indent-level 8)
-	 (setq LaTeX-item-indent 2)
-	 (setq indent-tabs-mode t)
-
-	 (TeX-fold-mode 1)
-	 
-	 (add-to-list
-	  'TeX-expand-list
-	  (list "%(extraopts)"
-		(lambda nil TeX-command-extra-options)))
+         (setq TeX-view-program-selection '(output-pdf "zathura"))
       )
 )
-
-
-;; Asymptote
-
-;; (add-to-list 'load-path "AsyPATH")
-(autoload 'asy-mode (concat (getenv "AsyPATH") "/asy-mode.el") "Asymptote major mode." t)
-(autoload 'lasy-mode (concat (getenv "AsyPATH") "/asy-mode.el") "hybrid Asymptote/Latex major mode." t)
-(autoload 'asy-insinuate-latex (concat (getenv "AsyPATH") "/asy-mode.el") "Asymptote insinuate LaTeX." t)
-(add-to-list 'auto-mode-alist '("\\.asy$" . asy-mode))
-
-(setq asy-command "asy -V -f pdf")
-(setq asy-command-no-view "asy -f pdf")
-
 ;; (treesit-available-p)
+
+;; flycheck
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; dtrt
 
 (add-hook 'prog-mode-hook #'dtrt-indent-mode)
+
 (add-hook 'TeX-mode-hook #'dtrt-indent-mode)
 
 ;; Org
@@ -193,9 +117,8 @@
 			  )
 )
 
-(add-to-list 'auto-mode-alist '("treemacs-persist" . org-mode))
-
 ;; projectile
+
 (projectile-mode +1)
 
 (define-key projectile-mode-map (kbd "C-c q") 'projectile-command-map)
@@ -203,8 +126,8 @@
 (setq projectile-enable-caching t)
 
 (projectile-register-project-type 'innercore '("make.json" "toolchain"))
-
 ;; Treemacs
+
 (add-hook 'imenu-mode-hook (setq imenu-auto-rescan t))
 
 (use-package treemacs
@@ -224,14 +147,16 @@
 ;; (add-hook 'emacs-startup-hook (message("d %s" treemacs-indentation)))
 ;; (add-hook 'treemacs-mode-hook (setq treemacs-indentation 2))
 
-;; (add-hook 'emacs-startup-hook 'treemacs)
+(add-hook 'emacs-startup-hook 'treemacs)
 ;; (add-hook 'emacs-startup-hook 'treemacs-project-follow-mode)
-;; (add-hook 'emacs-startup-hook 'treemacs-tag-follow-mode)
+(add-hook 'emacs-startup-hook 'treemacs-tag-follow-mode)
 
 ;; (setq treemacs-tag-follow-mode t)
 
 (use-package treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
+
+(add-to-list 'exec-path "/home/ferrocene/texlive/bin/x86_64-linux/")
 
 ;;;.emacs

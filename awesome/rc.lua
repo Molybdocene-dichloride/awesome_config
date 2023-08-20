@@ -1,6 +1,10 @@
 -- If LuaRocks is installed, make sure that packages installed through it are
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
-pcall(require, "luarocks.loader")
+-- package.path = package.path .. "luarocks/share/lua/5.4/"
+
+-- require "luarocks.loader"
+
+-- local luaposix = require("posix")
 
 -- Standard awesome library
 local gears = require("gears")
@@ -46,31 +50,122 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
+local dir = debug.getinfo(1).short_src
+
 -- This is used later as the default apps for actions.
-terminal = "urxvt"
 
-editor = os.getenv("EDITOR") or "emacs"
+terminal = os.getenv("TERMINAL")
+tt = {terminal, "-e"}
+
+editor = os.getenv("EDITOR")
 editor_cmd = terminal .. " -e " .. editor
-uieditor = "emacs"
-massiveeditor = "com.vscodium.codium"
-imageeditor = "gimp"
+uieditor = os.getenv("UIEDITOR")
+imageeditor = os.getenv("IMAGEEDITOR")
 
-mcviewer = "ghidra"
-docviewer = "zathura"
+docviewer = os.getenv("DOCVIEWER")
 
-browser = "firefox"
+browser = os.getenv("BROWSER")
 
-keymanager = "keepassxc"
-filemanager = "thunar"
-referencemanager = "Zotero"
-flatreferencemanager = "org.zotero"..referencemanager
-proccessmanager = "htop"
+keymanager = os.getenv("KEYMANAGER")
 
-avogadro = "avogadro2"
+function shallow_copy(tab)
+    local retval = {}
+    for k, v in pairs(tab) do
+	retval[k] = v
+    end
+    return retval
+end
+    
+function appret(tta, ap)
+    local ttt = shallow_copy(tta)
+    if type(ap) == "string" then
+	table.insert(ttt, ap)
+    elseif type(ap) == "table" then
+	for k, v in pairs(ap) do
+	    table.insert(ttt, v)
+	end
+    end
+    return ttt
+end
+
+areferencemanager = "Zotero"
+referencemanager = "flatpak run ".."org.zotero"..areferencemanager
+aproccessmanager = os.getenv("proccessmanager")
+proccessmanager = appret(tt, aproccessmanager)
+
+afilemanager = os.getenv("FILEMANAGER")
+filemanager = appret(tt, afilemanager)
+
+os.remove(os.getenv("HOME") .. "/ferretiss.fz")
+
+function parse_exports()
+    local exports = {}
+    local handle = assert(io.open(os.getenv("HOME") .. "/sci/misc/dirs.sh", "r"))
+    local val = handle:read("*all")
+    local wr = io.open(os.getenv("HOME") .. "/ferretiss.fz", "w")
+    wr:write("message\n")
+
+    local i = string.find(val, "\n")
+    local idx = 0
+    while i do
+	j = i+1
+	i = string.find(val, "\n", i+1)
+	idx=idx+1
+	if i ~= nil then
+	    vall = string.sub(val, j, i)
+	    if string.find(vall, "export") then
+		if not string.find(vall, "#export") then
+		    --wr:write(i)
+		    --wr:write("\n:")
+		    --wr:write(vall)
+		    --wr:write("\n")
+
+		    local aaaa, endexp = string.find(vall, "export")
+		    local ti = string.find(vall, "=")
+		    local ky = string.sub(vall, endexp+2, ti-1)
+		    wr:write(ky)
+		    local vl = string.sub(vall, ti+1)
+		    wr:write(":\n")
+		    wr:write(vl)
+
+		    exports[ky] = vl
+		end
+	    end
+	end
+    end
+
+    handle:close()
+    
+    wr:write("\n")
+    wr:write(exports["mathfundir"])
+    wr:close()
+
+    return exports
+end
+
+--bogus crutch env
+getenv = parse_exports()
+
+function osgetenv(ky)
+    return getenv[ky]
+end    
+
+physdir = os.getenv("HOME") .. "/sci/phys/docs"
+physfm = appret(tt, {afilemanager, physdir})
+
+mathdir = os.getenv("HOME") .. "/sci/math/docs"
+mathfm = appret(tt, {afilemanager, mathdir})
+
+chemdir = os.getenv("HOME") .. "/sci/chem/docs"
+chemfm = appret(tt, {afilemanager, chemdir})
+
+cellsdir = os.getenv("HOME") .. "/sci/cells/docs"
+cellsfm = appret(tt, {afilemanager, cellsdir})
+
+-- error(table.concat(mathfm))
 
 minecraft = "UltimMC"
 minecraftcomm = os.getenv("HOME") .. "/.minecraft"..minecraft
-ksp = "kerbal space program"
 
 -- Default modkey.
 modkey = "Mod4"
@@ -78,9 +173,9 @@ modkey = "Mod4"
 -- spawn clipit
 
 os.execute("ps -e | grep clipit > /tmp/clipit")
-ferret = io.popen("cat /tmp/clipit"):read("*all")
+clipitchkfile = io.popen("cat /tmp/clipit"):read("*all")
 
-if ferret:find("clipit") == nil then
+if clipitchkfile:find("clipit") == nil then
     awful.spawn("clipit")
 end
 
@@ -119,9 +214,7 @@ myawesomemenu = {
 mysciencemenu = {
 	{"KAlgebra", "kalgebra"},
 	
-	{"Zotero", "flatpak run"..referencemanager},
-	
-	{"Avogadro", avogadro},
+	{"Zotero", referencemanager},
 	
 	{"Minetest", "minetest"},
 	{"MultiMC", minecraftcomm},
@@ -146,11 +239,7 @@ mymainmenu = awful.menu({ items = {
 		{"Science", mysciencemenu, debug.getinfo(1).short_src:sub(0, 24) .. "/science_logo.png"},
 		{"Editor", myeditormenu},
 		{"Internet", myinternetmenu},
-		{"qpdfview", "qpdfview-qt5"},
-		{"ghidra", "ghidra"},
 		{"Home", filemanager},
-		{"DeaDBeeF", "deadbeef"},
-		{"VLC", "vlc"}
 	}
 })
 
@@ -223,7 +312,8 @@ local function set_wallpaper(s)
 	--gears.wallpaper.maximized(wallpaper, s, true)
 
 	gears.wallpaper.set("#FFFFFF00")
-	gears.wallpaper.centered(debug.getinfo(1).short_src:sub(0, 24) .. "/Ferrocene.png", s, "#FFFFFFFF", 1.3)
+	-- error(dir:sub(0, dir:len() - 6))
+	gears.wallpaper.centered(debug.getinfo(1).short_src:sub(0, dir:len() - 6) .. "/Ferrocene.png", s, "#FFFFFFFF", 1.65)
     end
 end
 
@@ -339,18 +429,22 @@ globalkeys = gears.table.join(
 	   {description="Run a "..browser, group="software"}),
 	awful.key({modkey, "Mod1"}, "e",	function() awful.spawn(uieditor) end,
 	   {description="Run a "..uieditor, group="software"}),
-	awful.key({modkey, "Mod1"}, "g",	function() awful.spawn("ghidra") end,
-	   {description="Run a ghidra", group="software"}),
-	awful.key({modkey, "Mod1"}, "m",	function() awful.spawn("flatpak run "..massiveeditor) end,
-	   {description="Run a "..massiveeditor, group="software"}),
-	awful.key({modkey, "Mod1"}, "r",	function() awful.spawn("flatpak run "..flatreferencemanager) end,
+	awful.key({modkey, "Mod1"}, "r",	function() awful.spawn(flatreferencemanager) end,
 	   {description="Run a "..referencemanager, group="software"}),
 	awful.key({modkey, "Mod1"}, "k",	function() awful.spawn(keymanager) end,
 	    {description="Run a "..keymanager, group="software"}),
-	awful.key({modkey, "Mod1"}, "p",	function() awful.spawn(terminal.." -e "..proccessmanager) end,
-	   {description="Run a "..proccessmanager, group="software"}),
+	awful.key({modkey, "Mod1"}, "p",	function() awful.spawn(proccessmanager) end,
+	   {description="Run a proccessmanager", group="software"}),
 	awful.key({modkey, "Mod1"}, "f",	function() awful.spawn(filemanager) end,
-	   {description="Run a "..filemanager, group="software"}),
+	   {description="Run a filemanager", group="software"}),
+	awful.key({modkey, "Mod1"}, "h",	function() awful.spawn(physfm) end,
+	   {description="Run a ..filemanager", group="software"}),
+	awful.key({modkey, "Mod1"}, "m",	function() awful.spawn(mathfm) end,
+	   {description="Run a ..filemanager", group="software"}),
+	awful.key({modkey, "Mod1"}, "x",	function() awful.spawn(chemfm) end,
+	    {description="Run a ..filemanager", group="software"}),
+	awful.key({modkey, "Mod1"}, "a",	function() awful.spawn(cellsfm) end,
+	    {description="Run a ..filemanager", group="software"}),
 	awful.key({modkey, "Mod1"}, "l",	function() awful.spawn("libreoffice") end,
 	   {description="Run a ".."libreoffice", group="software"}),
 	awful.key({modkey, "Mod1"}, "i",	function() awful.spawn(imageeditor) end,
@@ -361,12 +455,6 @@ globalkeys = gears.table.join(
 	   {description="Run a "..minecraft, group="software"}),
 	awful.key({modkey, "Mod1"}, "t",	function() awful.spawn(minetest) end,
 	   {description="Run a ".."minetest", group="software"}),
-	awful.key({modkey, "Mod1"}, "s",	function() awful.spawn("KSP.x86_64") end,
-	   {description="Run a "..ksp, group="software"}),
-	awful.key({modkey, "Mod1"}, "a",	function() awful.spawn("kalgebra") end,
-	   {description="Run a ".."kalgebra", group="software"}),
-	awful.key({modkey, "Mod1"}, "o",	function() awful.spawn("flatpak run"..avogadro) end,
-	   {description="Run a "..avogadro, group="software"}),
 	awful.key({modkey, "Mod1"}, "z",	function() awful.spawn("palemoon") end,
 	   {description="Run a ".."palemoon", group="software"}),
 	
@@ -641,7 +729,7 @@ awful.rules.rules = {
 	  "Kruler",
 	  "MessageWin",	 -- kalarm.
 	  "Sxiv",
-	  "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
+	  "Tor Browser", -- Needs a fixed window size to avod fingerprinting by screen size.
 	  "Wpa_gui",
 	  "veromix",
 	  "xtightvncviewer",
