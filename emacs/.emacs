@@ -13,7 +13,7 @@
  '(diff-switches "-u")
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(use-package yasnippet-snippets yasnippet dtrt-indent cape company cmake-mode cmake-font-lock cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref markdown-mode auctex auctex-latexmk cdlatex preview-latex projectile treemacs treemacs-projectile eglot eglot-jl)
+   '(use-package yasnippet-snippets yasnippet dtrt-indent cape company cmake-mode cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref markdown-mode auctex auctex-latexmk cdlatex preview-latex projectile treemacs treemacs-projectile eglot eglot-jl)
  )
 )
 
@@ -70,7 +70,6 @@
 ;; (package-generate-autoloads "flycheck-julia" "~/.emacs.d/elpa/flycheck-julia-0.1.1/")
 (eglot-jl-init)
 (add-hook 'julia-mode-hook 'eglot-ensure)
-;; (add-to-list 'flycheck-global-modes 'julia-mode)
 
 ;; latexmk
 
@@ -80,29 +79,59 @@
 (print (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
 (setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
 
-(defun ltxmk ()
-  (interactive)
-    (TeX-save-document (TeX-master-file))
-    (TeX-command "LatexMk" 'TeX-master-file -1)
-)
-
-(defun ltxmkl ()
-  (interactive)
-    (TeX-save-document (TeX-master-file))
-    (TeX-command "LatexMk" 'TeX-local-file -1)
-)
-
 (add-hook 'TeX-mode-hook
-      '(lambda ()
+      '(lambda ()	 
 	 (auctex-latexmk-setup)
+	 (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
+
+	 (put 'TeX-narrow-to-group 'disabled nil)
+	 (put 'LaTeX-narrow-to-environment 'disabled nil)
+	 (put 'narrow-to-region 'disabled nil)
+
+	 (defun ltxmk (TeXfile)
+	   (TeX-save-document TeXfile)
+	   (TeX-command "LatexMk" TeXfile -1)
+	 )
+
+	 (defun ltxmk-master ()
+	   (interactive)
+	   (ltxmk 'TeX-master-file)
+	 )
+
+	 (defun ltxmk-master-v ()
+	   (interactive)
+	   (ltxmk 'TeX-master-file)
+	   (if (file-exists-p output-file)
+	     (message "error")
+	     (TeX-command "View" 'TeX-active-master 0)
+	   )
+	 )
+
+	 (defun ltxmk-local ()
+	   (interactive)
+	   (setq tex-bf-file-name (buffer-file-name (window-buffer (minibuffer-selected-window))))
+	   (ltxmk (lambda(&optional extension nondirectory ask) tex-bf-file-name))
+	 )
+
+	 (defun ltxmk-local-v ()
+	   (interactive)
+	   (setq tex-bf-file-name (buffer-file-name (window-buffer (minibuffer-selected-window))))
+	   (ltxmk 'tex-bf-file-name)
+	   (if (file-exists-p output-file)
+	     (message "error")
+	     (TeX-command "View" 'TeX-active-master 0)
+	   )
+	 )
+
+	 
 	 (set (make-local-variable 'TeX-engine) 'luatex)
 	 (setq TeX-command-default "LatexMk")
 	 (add-to-list 'TeX-view-program-list '("zathura" "zathura %o"))
 	 (setq TeX-view-program-selection '((output-pdf "zathura")))
-	 (local-set-key (kbd "C-c C-g C-g") 'ltxmk)
-	 ;; (local-set-key (kbd "C-c C-g C-v") 'ltxmkv)
-	 ;; (local-set-key (kbd "C-c C-g C-l") 'ltxmkl)
-	 ;; (local-set-key (kbd "C-c C-g C-w") 'ltxmkl)
+	 (local-set-key (kbd "C-c C-g C-g") 'ltxmk-master)
+	 ;; (local-set-key (kbd "C-c C-g C-v") 'ltxmk-master-v)
+	 (local-set-key (kbd "C-c C-g C-l") 'ltxmk-local)
+	 ;; (local-set-key (kbd "C-c C-g C-w") 'ltxmk-local-v)
 	 
 	 (setq TeX-electric-math (cons "$" "$"))
 	 (setq LaTeX-electric-left-right-brace t)
@@ -116,7 +145,11 @@
 	 (setq indent-tabs-mode t)
 
 	 (TeX-fold-mode 1)
-	 
+
+	 (local-set-key (kbd "C-c C-y") 'prettify-symbols-mode)
+	 (local-set-key (kbd "C-c y") 'prettify-symbols-mode)
+	 (setq prettify-symbols-unprettify-at-point t)
+	 (setq prettify-symbols-unprettify-right-edge t)
 	 (add-to-list
 	  'TeX-expand-list
 	  (list "%(extraopts)"

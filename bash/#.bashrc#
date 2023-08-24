@@ -1,0 +1,14 @@
+c#
+# ~/.bashrc
+#
+
+. $HOME/sci/misc/dirs.sh
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+PS1='[\u@\h \W]\$ '
+
+[ -n "PS1" ] && [ -t 2 ] && clear
+[ -n "PS1" ] && [ -t 2 ] && echo -n -e "\033[6 q"

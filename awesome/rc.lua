@@ -50,24 +50,6 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
-local dir = debug.getinfo(1).short_src
-
--- This is used later as the default apps for actions.
-
-terminal = os.getenv("TERMINAL")
-tt = {terminal, "-e"}
-
-editor = os.getenv("EDITOR")
-editor_cmd = terminal .. " -e " .. editor
-uieditor = os.getenv("UIEDITOR")
-imageeditor = os.getenv("IMAGEEDITOR")
-
-docviewer = os.getenv("DOCVIEWER")
-
-browser = os.getenv("BROWSER")
-
-keymanager = os.getenv("KEYMANAGER")
-
 function shallow_copy(tab)
     local retval = {}
     for k, v in pairs(tab) do
@@ -87,6 +69,24 @@ function appret(tta, ap)
     end
     return ttt
 end
+
+local dir = debug.getinfo(1).short_src
+
+-- This is used later as the default apps for actions.
+
+terminal = os.getenv("TERMINAL")
+tt = {terminal, "-e"}
+
+editor = os.getenv("EDITOR")
+editor_cmd = appret(tt, editor)
+uieditor = os.getenv("UIEDITOR")
+imageeditor = os.getenv("IMAGEEDITOR")
+
+docviewer = os.getenv("DOCVIEWER")
+
+browser = os.getenv("BROWSER")
+
+keymanager = os.getenv("KEYMANAGER")
 
 areferencemanager = "Zotero"
 referencemanager = "flatpak run ".."org.zotero"..areferencemanager
@@ -143,8 +143,8 @@ function parse_exports()
     return exports
 end
 
---bogus crutch env
-getenv = parse_exports()
+-- bogus crutch env
+-- getenv = parse_exports()
 
 function osgetenv(ky)
     return getenv[ky]
@@ -313,7 +313,7 @@ local function set_wallpaper(s)
 
 	gears.wallpaper.set("#FFFFFF00")
 	-- error(dir:sub(0, dir:len() - 6))
-	gears.wallpaper.centered(debug.getinfo(1).short_src:sub(0, dir:len() - 6) .. "/Ferrocene.png", s, "#FFFFFFFF", 1.65)
+	gears.wallpaper.centered(debug.getinfo(1).short_src:sub(0, dir:len() - 6) .. "/Ferrocene.png", s, "#FFFFFFFF", 1.28)
     end
 end
 

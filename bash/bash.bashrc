@@ -2,22 +2,34 @@
 # /etc/bash.bashrc
 #
 
-export android_ndk=~/.android/android-ndk-r16b/
+export psert=""
 
-export TeXLivePATH=~/texlive
+if [ -n "$TERMUX_APK_RELEASE" ]; then
+   export psert=/data/data/com.termux/files
+fi
 
-export TeXMFPATH=$TeXLivePATH/texmf-dist
+if ! [ -n "$TERMUX_APK_RELEASE" ]; then #To Do
+   export TEXMFROOT=~/texlive
+   
+   export TeXLivePATH=$TEXMFROOT
 
-export AsyPATH=$TeXMFPATH/asymptote
+   export PATH=$PATH:$TeXLivePATH/bin/x86_64-linux/
 
-export PATH=$PATH:$TeXLivePATH/bin/x86_64-linux/:~/.luarocks/bin
+   export MANPATH=$MANPATH:$TeXMFDISTPATH/doc/man
 
-export LUA_PATH='/usr/share/lua/5.4/?.lua;/usr/share/lua/5.4/?/init.lua;/usr/lib/lua/5.4/?.lua;/usr/lib/lua/5.4/?/init.lua;./?.lua;./?/init.lua;~/.luarocks/share/lua/5.4/?.lua;~/.luarocks/share/lua/5.4/?/init.lua'
-export LUA_CPATH='/usr/lib/lua/5.4/?.so;/usr/lib/lua/5.4/loadall.so;./?.so;~/.luarocks/lib/lua/5.4/?.so'
+   export INFOPATH=$INFOPATH:$TeXMFDISTPATH/doc/info
+else
+   export TeXLivePATH=$TEXMFROOT
+fi
 
-export MANPATH=$MANPATH:$TeXMFPATH/doc/man/
+export TeXMFDISTPATH=$TeXLivePATH/texmf-dist
 
-export INFOPATH=$INFOPATH:$TeXMFPATH/doc/info/
+export AsyPATH=$TeXMFDISTPATH/asymptote
+
+#export PATH=:$PATH:~/.luarocks/bin
+#export LUA_PATH='/usr/share/lua/5.4/?.lua;/usr/share/lua/5.4/?/init.lua;/usr/lib/lua/5.4/?.lua;/usr/lib/lua/5.4/?/init.lua;./?.lua;./?/init.lua;~/.luarocks/share/lua/5.4/?.lua;~/.luarocks/share/lua/5.4/?/init.lua'
+#export LUA_CPATH='/usr/lib/lua/5.4/?.so;/usr/lib/lua/5.4/loadall.so;./?.so;~/.luarocks/lib/lua/5.4/?.so'
+
 
 export TERMINAL="urxvt"
 
@@ -41,7 +53,24 @@ export FILEMANAGER="vifm"
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+shopt -s histappend
+shopt -s histverify
+export HISTCONTROL=ignoreboth
+
 [[ $DISPLAY ]] && shopt -s checkwinsize
+
+# Default command line prompt.
+#PROMPT_DIRTRIM=2
+#PS1='\[\e[0;32m\]\w\[\e[0m\] \[\e[0;97m\]\$\[\e[0m\] '
+
+# Handles nonexistent commands.
+# If user has entered command which invokes non-available
+# utility, command-not-found will give a package suggestions.
+#if [ -x /data/data/com.termux/files/usr/libexec/termux/command-not-found ]; then
+#        command_not_found_handle() {
+#                /data/data/com.termux/files/usr/libexec/termux/command-not-found "$1"
+#        }
+#fi
 
 PS1='[\u@\h \W]\$ '
 
@@ -55,6 +84,6 @@ case ${TERM} in
     ;;
 esac
 
-if [[ -r /usr/share/bash-completion/bash_completion ]]; then
-  . /usr/share/bash-completion/bash_completion
+if [[ -r $psert/usr/share/bash-completion/bash_completion ]]; then
+  . $psert/usr/share/bash-completion/bash_completion
 fi
