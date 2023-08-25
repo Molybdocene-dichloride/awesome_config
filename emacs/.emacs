@@ -9,7 +9,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cua-mode t nil (cua-base))
+ ;; '(cua-mode t nil (cua-base))
  '(diff-switches "-u")
  '(inhibit-startup-screen t)
  '(package-selected-packages
@@ -61,18 +61,29 @@
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (add-hook 'julia-mode-hook #'flymake-mode)
 
+;;yas
+
+(add-hook 'yas-minor-mode-hook
+	  '(lambda ()
+	     (define-key yas-minor-mode-map (kbd "<tab>") nil)
+	     (define-key yas-minor-mode-map (kbd "TAB") nil)
+
+	     (define-key yas-minor-mode-map (kbd "TAB") #'yas-expand)
+	     (define-key yas-minor-mode-map (kbd "C-c TAB") #'yas-insert-snippet)
+	   )
+)
+
+(add-hook 'prog-mode-hook #'yas-minor-mode)
+(add-hook 'TeX-mode-hook #'yas-minor-mode)
+
 ;; eglot
 
 (set 'eglot-connect-timeout 250)
 
 ;; julia
 
-;; (package-generate-autoloads "flycheck-julia" "~/.emacs.d/elpa/flycheck-julia-0.1.1/")
 (eglot-jl-init)
 (add-hook 'julia-mode-hook 'eglot-ensure)
-
-;; latexmk
-
 
 ;; TeX
 
@@ -144,12 +155,52 @@
 	 (setq LaTeX-item-indent 2)
 	 (setq indent-tabs-mode t)
 
+	 (local-set-key (kbd "C-b C-p") 'outline-next-visible-heading)
+	 (local-set-key (kbd "C-b C-n") 'outline-previous-visible-heading)
+	 (local-set-key (kbd "C-b C-f") 'outline-forward-same-level)
+	 (local-set-key (kbd "C-b C-b") 'outline-previous-visible-heading)
+
+	 (local-set-key (kbd "C-b C-c") 'outline-hide-entry)
+	 (local-set-key (kbd "C-b C-e") 'outline-show-entry)
+
+	 (local-set-key (kbd "C-b C-l") 'outline-hide-leaves)
+	 (local-set-key (kbd "C-b C-k") 'outline-show-branches)
+
+	 (local-set-key (kbd "C-b C-a") 'outline-show-all)
+	 
 	 (TeX-fold-mode 1)
 
 	 (local-set-key (kbd "C-c C-y") 'prettify-symbols-mode)
 	 (local-set-key (kbd "C-c y") 'prettify-symbols-mode)
 	 (setq prettify-symbols-unprettify-at-point t)
 	 (setq prettify-symbols-unprettify-right-edge t)
+
+	 (setq cdlatex-command-alist '(("sec" "Insert section 2" "" cdlatex-environment ("section") t nil)
+				       ("ssec" "Insert subsection 2" "" cdlatex-environment ("subsection") t nil)
+				       ("sssec" "Insert subsection 2" "" cdlatex-environment ("subsubsection") t nil)
+				       ("igr" "Insert graphics" "" cdlatex-environment ("includegraphics") t nil)
+				       ("law" "Insert left arrow" "" cdlatex-environment ("leftarrow") t nil)
+				       ("raw" "Insert right arrow" "" cdlatex-environment ("rightarrow") t nil)
+
+				       ("xpow" "Insert powered expr" "" "?^{}" cdlatex-position-cursor nil nil)
+				       ;; (" pow" "Insert powered expr" "" "^{?}" cdlatex-position-cursor nil nil)
+				       ("xsq" "Insert expr^2 (squared)" "?^{2}" cdlatex-position-cursor nil nil)
+				       ("xsr" "Insert expr^2 (squared)" "?^{2}" cdlatex-position-cursor nil nil)
+				       ("xcb" "Insert expr^3 (cubed)" "?^{3}" cdlatex-position-cursor nil nil)
+
+				       ("powx" "Insert x^exp" "?^{}" cdlatex-position-cursor nil nil)
+				       ("sqx" "Insert 2^exp" "2^{?}" cdlatex-position-cursor nil nil)
+				       ("srx" "Insert 2^exp" "2^{?}" cdlatex-position-cursor nil nil)
+				       ("cbx" "Insert 3^expr" "3^{?}" cdlatex-position-cursor nil nil)
+
+				       ;; differential equations
+				       ("crt2" "Insert chemical reaction rate" "k?^{x} ^{y}" cdlatex-position-cursor nil nil)
+				       ("crt3" "Insert chemical reaction rate" "k?^{x} ^{y} ^{z}" cdlatex-position-cursor nil nil)
+				       ("drt" "Insert diffusion rate (first Fick equation)" "-D\\nabla ?s" cdlatex-position-cursor nil nil)
+				       ("drts" "Insert second Fick equation" "-D\\laplacian ?s" cdlatex-position-cursor nil nil)
+				       
+				       ))
+	 
 	 (add-to-list
 	  'TeX-expand-list
 	  (list "%(extraopts)"

@@ -9,7 +9,7 @@ if [ -n "$TERMUX_APK_RELEASE" ]; then
 fi
 
 if ! [ -n "$TERMUX_APK_RELEASE" ]; then #To Do
-   export TEXMFROOT=~/texlive
+   export TEXMFROOT=/home/fr/texlive
    
    export TeXLivePATH=$TEXMFROOT
 
