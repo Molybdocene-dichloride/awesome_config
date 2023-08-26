@@ -36,6 +36,9 @@
  ;; If there is more than one, they won't work right.
  )
 
+(setq-default cursor-type 'bar)
+(set-cursor-color "blue")
+
 (reverse-im-mode t)
 
 ;; RC
@@ -61,7 +64,11 @@
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (add-hook 'julia-mode-hook #'flymake-mode)
 
-;;yas
+;;YASnippet
+
+(add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
+
+(add-to-list 'auto-mode-alist '("\\.profile$" . sh-mode))
 
 (add-hook 'yas-minor-mode-hook
 	  '(lambda ()
@@ -70,6 +77,7 @@
 
 	     (define-key yas-minor-mode-map (kbd "TAB") #'yas-expand)
 	     (define-key yas-minor-mode-map (kbd "C-c TAB") #'yas-insert-snippet)
+	     (setq yas-snippet-dirs '("~/.emacs.d/snt/"))
 	   )
 )
 
@@ -93,7 +101,7 @@
 (add-hook 'TeX-mode-hook
       '(lambda ()	 
 	 (auctex-latexmk-setup)
-	 (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
+	 (turn-on-cdlatex)
 
 	 (put 'TeX-narrow-to-group 'disabled nil)
 	 (put 'LaTeX-narrow-to-environment 'disabled nil)
@@ -192,12 +200,13 @@
 				       ("sqx" "Insert 2^exp" "2^{?}" cdlatex-position-cursor nil nil)
 				       ("srx" "Insert 2^exp" "2^{?}" cdlatex-position-cursor nil nil)
 				       ("cbx" "Insert 3^expr" "3^{?}" cdlatex-position-cursor nil nil)
+				       ("pgh" "Insert grav pressure" "\\rho gh" cdlatex-position-cursor nil nil)
 
-				       ;; differential equations
+				       ;; some equations
 				       ("crt2" "Insert chemical reaction rate" "k?^{x} ^{y}" cdlatex-position-cursor nil nil)
 				       ("crt3" "Insert chemical reaction rate" "k?^{x} ^{y} ^{z}" cdlatex-position-cursor nil nil)
-				       ("drt" "Insert diffusion rate (first Fick equation)" "-D\\nabla ?s" cdlatex-position-cursor nil nil)
-				       ("drts" "Insert second Fick equation" "-D\\laplacian ?s" cdlatex-position-cursor nil nil)
+				       ("drt" "Insert diffusion rate (first Fick law)" "-D\\nabla ?s" cdlatex-position-cursor nil nil)
+				       ("drts" "Insert second Fick law" "-D\\laplacian ?s" cdlatex-position-cursor nil nil)
 				       
 				       ))
 	 
