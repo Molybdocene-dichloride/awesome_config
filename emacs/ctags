@@ -1,0 +1,5 @@
+--langdef=tex
+--langmap=tex:.tex
+--regex-tex=/\\includegraphics*(\[\])\{([^}]+)\}/includegraphics/g, graphics/
+
+--regex-tex=/\\begin\{equation\}\\end\{equation\}/equation/e, equation/

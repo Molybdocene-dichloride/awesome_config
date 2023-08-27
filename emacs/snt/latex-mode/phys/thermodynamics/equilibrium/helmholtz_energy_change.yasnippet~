@@ -1,0 +1,3 @@
+#name: snippet for Helmholtz free energy
+#--
+${1:$(eq-val-d "dF")}=${4:$(eq-val-d "p")}${2:$(eq-val-d "dV")}-${5:$(eq-val-d "S")}${3:$(eq-val-d "dT")}

@@ -1,0 +1,3 @@
+#name: snippet for Prandtl number
+#--
+${1:$(eq-val-d "\\mathrm{Pr}")}=\\frac{${1:$(eq-val-d "\\nu")}}{${1:$(eq-coeff-d "\\alpha")}}

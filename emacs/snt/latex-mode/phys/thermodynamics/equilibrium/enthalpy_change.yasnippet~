@@ -1,0 +1,3 @@
+#name: snippet for enthalpy change
+#--
+${1:$(eq-val-d "dH")}=${4:$(eq-val-d "T")}${2:$(eq-val-d "dS")}+${5:$(eq-val-d "V")}${3:$(eq-val-d "dp")}

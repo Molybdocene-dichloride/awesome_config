@@ -1,0 +1,3 @@
+#name: snippet for Gibbs free energy
+#--
+${1:$(eq-val-d "G")}=${2:$(eq-val-d "U")}+${3:$(eq-val-d "p")}${5:$(eq-val-d "V")}-${4:$(eq-val-d "T")}${6:$(eq-val-d "S")}

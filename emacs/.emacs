@@ -64,6 +64,10 @@
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (add-hook 'julia-mode-hook #'flymake-mode)
 
+;; eglot
+
+(set 'eglot-connect-timeout 250)
+
 ;;YASnippet
 
 (add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
@@ -77,16 +81,18 @@
 
 	     (define-key yas-minor-mode-map (kbd "TAB") #'yas-expand)
 	     (define-key yas-minor-mode-map (kbd "C-c TAB") #'yas-insert-snippet)
-	     (setq yas-snippet-dirs '("~/.emacs.d/snt/"))
+	     (setq yas-snippet-dirs '("~/.emacs.d/elpa/yasnippet-snippets-20230815.820/snippets/" "~/.emacs.d/snt/"))
 	   )
 )
 
-(add-hook 'prog-mode-hook #'yas-minor-mode)
-(add-hook 'TeX-mode-hook #'yas-minor-mode)
+;;(add-hook 'prog-mode-hook #'yas-minor-mode)
+;;(add-hook 'TeX-mode-hook #'yas-minor-mode)
 
-;; eglot
+(yas-global-mode)
 
-(set 'eglot-connect-timeout 250)
+;; company
+
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;; julia
 
