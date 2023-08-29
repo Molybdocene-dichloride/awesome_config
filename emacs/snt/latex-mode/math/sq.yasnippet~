@@ -1,0 +1,4 @@
+# name: square
+# key: sq
+# --
+`(delete-backward-char 1)`^{2}$0

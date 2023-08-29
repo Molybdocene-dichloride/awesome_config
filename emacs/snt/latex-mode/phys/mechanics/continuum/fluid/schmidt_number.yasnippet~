@@ -1,0 +1,3 @@
+# name: snippet for Schmidt number
+# --
+\\frac{${1:$(eq-val-d "\\nu")}}{${2:$(eq-val-d "D")}}

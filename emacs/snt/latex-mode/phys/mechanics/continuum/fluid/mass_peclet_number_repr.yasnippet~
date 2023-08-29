@@ -1,0 +1,3 @@
+# name: snippet for mass Peclet number (ReSc)
+# --\
+${1:$(eq-val-d "\\mathrm{Re}")}${2:$(eq-val-d "\\mathrm{Sc}")}

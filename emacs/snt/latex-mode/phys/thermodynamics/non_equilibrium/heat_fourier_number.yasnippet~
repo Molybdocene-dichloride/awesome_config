@@ -1,0 +1,3 @@
+# name: snippet for Fourier number
+# --
+\\frac{${1:$(eq-val-d "\\alpha")}${2:$(eq-val-d "t")}}{${3:$(eq-val-d "L^{2}")}}

@@ -1,0 +1,4 @@
+# name: ^2
+# key: 
+# --
+`(delete-backward-char 1)`^{2}$0

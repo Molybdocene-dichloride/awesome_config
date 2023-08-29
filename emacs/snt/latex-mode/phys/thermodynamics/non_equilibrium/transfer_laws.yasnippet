@@ -1,3 +1,4 @@
-# name: snippet for several transfer laws (Fick law of diffusion, Fourier's law of thermal conduction, Ohm's law of electrical conduction, Newtonian law of viscosity)
+# name: several transfer laws (Fick's law of diffusion, Fourier's law of thermal conduction, Ohm's law of electrical conduction, Newtonian law of viscosity)
+# key: trfl
 # --
-${1:$(eq-val)} = -${2:$(eq-coeff-d "D")}\\nabla $3
+${1:$(eq-val "=")}-${2:$(eq-coeff-d "D")}\\nabla $3

@@ -1,0 +1,4 @@
+# name: heat Peclet number
+#key: hpen
+# --
+${1:$(eq-val-d "\\mathrm{Pe}")}=\\frac{${2:$(eq-val-d "v")}${3:$(eq-val-d "L")}}{${4:$(eq-coeff-d "\\chi")}}

@@ -1,0 +1,4 @@
+# name: Schmidt number 2
+# key: scn2
+# --
+\\frac{${1:$(eq-val-d "\\mu")}}{${2:$(eq-val-d "\\rho")}${3:$(eq-val-d "D")}}

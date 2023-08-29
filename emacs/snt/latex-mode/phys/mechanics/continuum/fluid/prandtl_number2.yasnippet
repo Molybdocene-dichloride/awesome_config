@@ -1,3 +1,4 @@
-# name: snippet for Prandtl number
+# name: Prandtl number2
+# key: pran2
 # --
-${1:$(eq-val-d "\\mathrm{Pr}")}=\frac{${1:$(eq-val-d "c_{p}")}${1:$(eq-val-d "\\mu")}}{${1:$(eq-coeff-d "k")}}
+${1:$(eq-val-d "\\mathrm{Pr}=")}=\frac{${2:$(eq-val-d "c_{p}")}${3:$(eq-val-d "\\mu")}}{${4:$(eq-coeff-d "k")}}

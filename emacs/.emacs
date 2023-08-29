@@ -1,3 +1,4 @@
+
 ;;; .emacs --- .emacs file
 ;;; Commentary:
 ;; My bad code
@@ -5,7 +6,7 @@
 ;;; Code:
 
 (custom-set-variables
- ;; custom-set-variabltes was added by Custom.
+ ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
@@ -13,12 +14,14 @@
  '(diff-switches "-u")
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(use-package yasnippet-snippets yasnippet dtrt-indent cape company cmake-mode cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref markdown-mode auctex auctex-latexmk cdlatex preview-latex projectile treemacs treemacs-projectile eglot eglot-jl)
+   '(use-package yasnippet-snippets yasnippet dtrt-indent cape company company-ctags cmake-mode cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref auctex auctex-latexmk cdlatex preview-latex projectile treemacs treemacs-projectile eglot eglot-jl)
  )
 )
 
 ;;; uncomment for CJK utf-8 support for non-Asian users
 ;; (require 'un-define)
+
+;; packages
 
 (require 'package)
  (add-to-list 'package-archives
@@ -27,8 +30,9 @@
 ;;             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 
-(setq frame-resize-pixelwise t)
+;; faces
 
+(setq frame-resize-pixelwise t)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -37,19 +41,17 @@
  )
 
 (setq-default cursor-type 'bar)
-(set-cursor-color "blue")
-
-(reverse-im-mode t)
+(set-cursor-color "#778888")
+(set-face-attribute 'region nil :background "#CCDDDD")
 
 ;; RC
 
-(let ((path (shell-command-to-string "source ~/.bashrc; echo -n $AsyPATH")))
-  (print "AsyPATH")
-  (setenv "AsyPATH" path)
-)
+(print "exec-path")
+(print exec-path)
 
 ;; Keys
 
+(reverse-im-mode t)
 (reverse-im-activate "russian-computer")
 
 ;; Undo
@@ -66,22 +68,29 @@
 
 ;; eglot
 
-(set 'eglot-connect-timeout 250)
+(set 'eglot-connect-timeout 255)
+
+;; sh
+
+(add-to-list 'auto-mode-alist '("\\.profile$" . sh-mode))
 
 ;;YASnippet
 
 (add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
-
-(add-to-list 'auto-mode-alist '("\\.profile$" . sh-mode))
 
 (add-hook 'yas-minor-mode-hook
 	  '(lambda ()
 	     (define-key yas-minor-mode-map (kbd "<tab>") nil)
 	     (define-key yas-minor-mode-map (kbd "TAB") nil)
 
-	     (define-key yas-minor-mode-map (kbd "TAB") #'yas-expand)
+	     (define-key yas-minor-mode-map (kbd "C-c w") #'yas-expand)
 	     (define-key yas-minor-mode-map (kbd "C-c TAB") #'yas-insert-snippet)
+	     (local-set-key (kbd "TAB") #'yas-expand)
+
 	     (setq yas-snippet-dirs '("~/.emacs.d/elpa/yasnippet-snippets-20230815.820/snippets/" "~/.emacs.d/snt/"))
+             (with-eval-after-load 'warnings
+              (cl-pushnew '(yasnippet backquote-change) warning-suppress-types
+              :test 'equal))
 	   )
 )
 
@@ -91,8 +100,25 @@
 (yas-global-mode)
 
 ;; company
+(global-company-mode)
 
-(add-hook 'after-init-hook 'global-company-mode)
+(defun b_load_company_sup ()
+           (company-ctags-auto-setup)
+	   (set (make-local-variable 'company-backends) '((company-files company-yasnippet company-capf company-ctags)))
+)
+
+(add-hook 'TeX-mode-hook '(lambda ()
+             (b_load_company_sup)
+      )
+)
+(add-hook 'org-mode-hook '(lambda ()
+             (b_load_company_sup)
+      )
+)
+(add-hook 'prog-mode-hook '(lambda ()
+	     (b_load_company_sup)
+      )
+)
 
 ;; julia
 
@@ -101,8 +127,7 @@
 
 ;; TeX
 
-(print (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
-(setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
+;; (setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
 
 (add-hook 'TeX-mode-hook
       '(lambda ()	 
@@ -113,6 +138,42 @@
 	 (put 'LaTeX-narrow-to-environment 'disabled nil)
 	 (put 'narrow-to-region 'disabled nil)
 
+	 (defun eq-symbs ()
+           (interactive)
+	   (print "ferrets")
+           (setq eq-start-point (- (point) 2))
+           (setq eq-start-symbol (string(char-after eq-start-point)))
+	   (print eq-start-point)
+	   (setq condaoi (equal eq-start-symbol "|"))
+	   (print condaoi)
+	   (if condaoi (progn
+	       (setq eq-c-point eq-start-point)
+	       (setq eq-c-symbol eq-start-symbol)
+	       (print eq-start-symbol)
+	       (print eq-c-point)
+	       (print eq-c-symbol)
+	       (while (and (not (equal eq-c-symbol " ")) (not (equal eq-c-symbol "\n"))) (progn
+	             (setq eq-c-point (- eq-c-point 1))
+		     (setq eq-c-symbol (string(char-after eq-c-point)))
+		     (print eq-c-point)
+	             (print eq-c-symbol)
+	         )
+	       )
+	   ))
+	   (setq eq-start-point nil)
+           (setq eq-start-symbol nil)
+	   
+	   (setq eq-c-point nil)
+	   (setq eq-c-symbol nil)
+         )
+	 (defun eq-clear-symbs ()
+	   (interactive)
+	   (setq eq-start-point nil)
+           (setq eq-start-symbol nil)
+	   
+	   (setq eq-c-point nil)
+	   (setq eq-c-symbol nil)
+         )
 	 (defun ltxmk (TeXfile)
 	   (TeX-save-document TeXfile)
 	   (TeX-command "LatexMk" TeXfile -1)
@@ -215,8 +276,7 @@
 				       ("drts" "Insert second Fick law" "-D\\laplacian ?s" cdlatex-position-cursor nil nil)
 				       
 				       ))
-	 
-	 (add-to-list
+         (add-to-list
 	  'TeX-expand-list
 	  (list "%(extraopts)"
 		(lambda nil TeX-command-extra-options)))

@@ -1,3 +1,4 @@
-# name: snippet for Arrhenius equation
+# name: Arrhenius equation
+# key: arreq
 # --
-${1:$(eq-val-d "k")}=${2:$(eq-coeff-d "A")}e^{-\\frac{${3:$(eq-val-d "E")}}{${4:$(eq-val-d "R")}${5:$(eq-val-d "T")}}}
+${1:$(call-interactively #'eq-val-d "k=")}${2:$(call-interactively #'eq-coeff-d "A")}e^{-\\frac{${3:$(call-interactively #'eq-val-d "E")}}{${4:$(call-interactively #'eq-val-d "R")}${5:$(call-interactively #'eq-val-d "T")}}}
