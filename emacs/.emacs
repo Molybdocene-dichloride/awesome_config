@@ -40,9 +40,25 @@
  ;; If there is more than one, they won't work right.
  )
 
-(setq-default cursor-type 'bar)
+(setq-default cursor-type '(bar . 3))
 (set-cursor-color "#778888")
 (set-face-attribute 'region nil :background "#CCDDDD")
+(set-face-attribute 'show-paren-match nil :background "#90F1E1")
+(set-face-attribute 'show-paren-match-expression nil :background "#60F0E1")
+(set-face-attribute 'show-paren-mismatch nil :background "#939DDD")
+
+
+(delete-selection-mode t)
+(setq x-select-enable-primary nil) ;; crutch for Arch (?)
+
+;; Indent
+
+(setq-default indent-tabs-mode t)
+(setq-default tab-width 4)
+(setq dtrt-indent-explicit-tab-mode t)
+
+(add-hook 'prog-mode-hook #'dtrt-indent-mode)
+(add-hook 'TeX-mode-hook #'dtrt-indent-mode)
 
 ;; RC
 
@@ -83,11 +99,11 @@
 	     (define-key yas-minor-mode-map (kbd "<tab>") nil)
 	     (define-key yas-minor-mode-map (kbd "TAB") nil)
 
-	     (define-key yas-minor-mode-map (kbd "C-c w") #'yas-expand)
+	     (define-key yas-minor-mode-map (kbd "C-c d") #'yas-expand)
 	     (define-key yas-minor-mode-map (kbd "C-c TAB") #'yas-insert-snippet)
-	     (local-set-key (kbd "TAB") #'yas-expand)
+	     ; (local-set-key (kbd "TAB") 'yas-expand)
 
-	     (setq yas-snippet-dirs '("~/.emacs.d/elpa/yasnippet-snippets-20230815.820/snippets/" "~/.emacs.d/snt/"))
+	     (setq yas-snippet-dirs '("~/.emacs.d/elpa/yasnippet-snippets-20230815.820/snippets/" "~/.emacs.d/third_party_snippets/" "~/.emacs.d/snt/"))
              (with-eval-after-load 'warnings
               (cl-pushnew '(yasnippet backquote-change) warning-suppress-types
               :test 'equal))
@@ -130,17 +146,27 @@
 ;; (setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
 
 (add-hook 'TeX-mode-hook
-      '(lambda ()	 
+      '(lambda ()
 	 (auctex-latexmk-setup)
-	 (turn-on-cdlatex)
 
+	 (turn-on-cdlatex)
+         (define-key cdlatex-mode-map (kbd "C-c w") #'cdlatex-tab)
+	 (add-hook 'cdlatex-tab-hook '(lambda()
+	   (LaTeX-indent-line)
+           (yas-expand)
+	 ))
+         
+	 ; not work
+	 ; (local-set-key (kbd "TAB") 'yas-expand)
+	 ; (local-set-key (kbd "TAB") 'LaTeX-indent-line)
+	 
 	 (put 'TeX-narrow-to-group 'disabled nil)
 	 (put 'LaTeX-narrow-to-environment 'disabled nil)
 	 (put 'narrow-to-region 'disabled nil)
 
 	 (defun eq-symbs ()
            (interactive)
-	   (print "ferrets")
+	       (print "ferrets")
            (setq eq-start-point (- (point) 2))
            (setq eq-start-symbol (string(char-after eq-start-point)))
 	   (print eq-start-point)
@@ -152,28 +178,96 @@
 	       (print eq-start-symbol)
 	       (print eq-c-point)
 	       (print eq-c-symbol)
-	       (while (and (not (equal eq-c-symbol " ")) (not (equal eq-c-symbol "\n"))) (progn
-	             (setq eq-c-point (- eq-c-point 1))
-		     (setq eq-c-symbol (string(char-after eq-c-point)))
+	       (setq eq-c-strings (make-list 0 "ferret"))
+	       (setq eq-c-point (- eq-c-point 1))
+	       ; (string(char-after eq-c-point))
+	       (setq eq-c-string "")
+	       (while (and (not (equal eq-c-symbol " ")) (not (equal eq-c-symbol "\t")) (not (equal eq-c-symbol "\n"))) (progn
+		     (print "while")
+	         (setq eq-c-symbol (string(char-after eq-c-point)))
 		     (print eq-c-point)
-	             (print eq-c-symbol)
+	         (print eq-c-symbol)
+		     (if (equal eq-c-symbol "|") (progn
+               (print "eq-c-string")
+	           (print eq-c-string)
+	           (add-to-list 'eq-c-strings (copy-tree eq-c-string))
+			   (setq eq-c-string "")
+			 ) (progn
+                (print "bbnn")
+			    (setq eq-c-string (concat eq-c-symbol eq-c-string))
+			 )
+		     )
+                (setq eq-c-point (- eq-c-point 1))
 	         )
 	       )
 	   ))
-	   (setq eq-start-point nil)
-           (setq eq-start-symbol nil)
+
+	   (print "eq-c-strings")
+	   (print eq-c-strings)
+     )
+
+	 (defun eq-val (idx)
+	   (nth (- idx 1) eq-c-strings)
+	 )
+	 
+	 (defun eq-coeff (idx)
+	   (setq eq-avalue (eq-val idx))
+	   (print (length eq-avalue))
+	   (if (> (length eq-avalue) 1) (progn
+	     (print (substring eq-avalue 0 1))
+         (if (equal (substring eq-avalue 0 1) "'") (progn
+		   (print "checkers")
+		   (setq eq-avalue-s (concat "(" (substring eq-avalue 1) ")"))
+		   (print eq-avalue-s)
+           (setq eq-avalue (eval (car (read-from-string eq-avalue-s))))
+	     ))
+	   ))
+	   (eval eq-avalue)
+	 )
+
+	 (defun eq-default (eq-avalue &optional default)
+	   (if (or (equal eq-avalue "") (equal eq-avalue nil) (equal eq-avalue "\n")) (progn
+         (setq eq-avalue default)
+	   ))
+	   (if (equal eq-avalue nil) (progn
+         (setq eq-avalue "")
+	   ))
 	   
-	   (setq eq-c-point nil)
-	   (setq eq-c-symbol nil)
-         )
+	   (eval eq-avalue)
+	 )
+
+	 (defun eq-val-d (idx &optional default)
+	   (setq eq-avalue (eq-val idx))
+	   (eq-default eq-avalue default)
+	 )
+	 
+	 (defun eq-coeff-d (idx &optional default)
+	   (setq eq-avalue (eq-coeff idx))
+	   (eq-default eq-avalue default)
+	 )
+	 
+	 (defun eq-vall ()
+	   (interactive)
+	   (print (eq-coeff 1))
+	   (print (eq-coeff 2))
+	   (print (eq-coeff 3))
+
+	   (print (eq-coeff-d 1 "\\Delta"))
+	   (print (eq-coeff-d 2))
+	   (print (eq-coeff-d 3 "\\Delta")) ; \\rho
+	 )
+	 
 	 (defun eq-clear-symbs ()
 	   (interactive)
 	   (setq eq-start-point nil)
-           (setq eq-start-symbol nil)
+       (setq eq-start-symbol nil)
 	   
 	   (setq eq-c-point nil)
 	   (setq eq-c-symbol nil)
-         )
+	   (setq eq-c-string nil)
+	   (setq eq-c-strings nil)
+     )
+	 
 	 (defun ltxmk (TeXfile)
 	   (TeX-save-document TeXfile)
 	   (TeX-command "LatexMk" TeXfile -1)
@@ -224,12 +318,13 @@
 	 (setq TeX-insert-braces nil)
 	 
 	 (setq LaTeX-default-width "\textwidth")
-	 (setq LaTeX-math-abbrev-prefix ":")
+	 ; (setq LaTeX-math-abbrev-prefix ":")
 
-	 (setq LaTeX-indent-level 8)
+	 (setq LaTeX-indent-level 4)
 	 (setq LaTeX-item-indent 2)
 	 (setq indent-tabs-mode t)
-
+         (setq LaTeX-document-regexp nil)
+	 
 	 (local-set-key (kbd "C-b C-p") 'outline-next-visible-heading)
 	 (local-set-key (kbd "C-b C-n") 'outline-previous-visible-heading)
 	 (local-set-key (kbd "C-b C-f") 'outline-forward-same-level)
@@ -280,6 +375,8 @@
 	  'TeX-expand-list
 	  (list "%(extraopts)"
 		(lambda nil TeX-command-extra-options)))
+
+	 ;(define-key cdlatex-mode-map (kbd "TAB") nil)
       )
 )
 
@@ -296,11 +393,6 @@
 (setq asy-command-no-view "asy -f pdf")
 
 ;; (treesit-available-p)
-
-;; dtrt
-
-(add-hook 'prog-mode-hook #'dtrt-indent-mode)
-(add-hook 'TeX-mode-hook #'dtrt-indent-mode)
 
 ;; Org
 
