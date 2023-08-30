@@ -1,0 +1,57 @@
+* inner projects
+** ic2
+ - path :: ~/projects/inner/ic2
+** GT
+ - path :: ~/projects/inner/GregTech_BE
+** new toolchain
+ - path :: ~/projects/inner/new_toolchain
+
+* linuxconfig
+** linuxconfig
+ - path :: ~/projects/linuxconfig
+
+* TeX
+** asyplants
+ - path :: ~/projects/tex`/asyplants
+
+* misc_chren
+** machs
+ - path :: ~/projects/misc/machs
+
+* scis
+** ORG
+ - path :: ~/sci/org
+** cellseq
+ - path :: ~/sci/cells/eq
+** cellslab
+ - path :: ~/sci/cells/lab
+** chemseq
+ - path :: ~/sci/chem/eq
+** chemslab
+ - path :: ~/sci/chem/lab
+** chemorgseq
+ - path :: ~/sci/chem/org/eq
+** chemorgslab
+ - path :: ~/sci/chem/org/lab
+** chemanalseq
+ - path :: ~/sci/chem/anal/eq
+** chemanalslab
+ - path :: ~/sci/chem/anal/lab
+** phystseq
+ - path :: ~/sci/phys/thermdn/eq
+** phystslab
+ - path :: ~/sci/chem/thermdn/lab
+** physP
+ - path :: ~/sci/phys/physP/eq
+** miscmap
+ - path :: ~/sci/misc/map
+** mischum
+ - path :: ~/sci/misc/humans
+** machpeq
+ - path :: ~/sci/machines/PAKhT/eq
+** machplab
+ - path :: ~/sci/machines/PAKhT/lab
+** machoeq
+ - path :: ~/sci/machines/OKhT/eq
+** macholab
+ - path :: ~/sci/machines/OKhT/lab

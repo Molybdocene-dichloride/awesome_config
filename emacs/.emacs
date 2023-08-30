@@ -51,15 +51,6 @@
 (delete-selection-mode t)
 (setq x-select-enable-primary nil) ;; crutch for Arch (?)
 
-;; Indent
-
-(setq-default indent-tabs-mode t)
-(setq-default tab-width 4)
-(setq dtrt-indent-explicit-tab-mode t)
-
-(add-hook 'prog-mode-hook #'dtrt-indent-mode)
-(add-hook 'TeX-mode-hook #'dtrt-indent-mode)
-
 ;; RC
 
 (print "exec-path")
@@ -86,9 +77,52 @@
 
 (set 'eglot-connect-timeout 255)
 
-;; sh
+;; Indent
 
-(add-to-list 'auto-mode-alist '("\\.profile$" . sh-mode))
+(setq-default indent-tabs-mode t)
+(setq-default tab-width 4)
+(setq dtrt-indent-explicit-tab-mode t)
+
+(add-hook 'prog-mode-hook #'dtrt-indent-mode)
+(add-hook 'TeX-mode-hook #'dtrt-indent-mode)
+
+;; projectile
+
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c q") 'projectile-command-map)
+(setq projectile-enable-caching t)
+(projectile-register-project-type 'innercore '("make.json" "toolchain"))
+
+;; Treemacs
+
+(add-hook 'imenu-mode-hook (setq imenu-auto-rescan t))
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-wide-toggle-width 80
+	  treemacs-width 24
+	  treemacs-indentation 1
+    )
+  )
+)
+;; (add-hook 'emacs-startup-hook (message("d %s" treemacs-indentation)))
+;; (add-hook 'treemacs-mode-hook (setq treemacs-indentation 2))
+
+;; (add-hook 'emacs-startup-hook 'treemacs)
+;; (add-hook 'emacs-startup-hook 'treemacs-project-follow-mode)
+;; (add-hook 'emacs-startup-hook 'treemacs-tag-follow-mode)
+
+;; (setq treemacs-tag-follow-mode t)
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
 
 ;;YASnippet
 
@@ -107,53 +141,64 @@
              (with-eval-after-load 'warnings
               (cl-pushnew '(yasnippet backquote-change) warning-suppress-types
               :test 'equal))
-	   )
+   )
 )
 
-;;(add-hook 'prog-mode-hook #'yas-minor-mode)
+;;(add-hook 'prog-mode-hook #'yas-minor-mode) ; not work
 ;;(add-hook 'TeX-mode-hook #'yas-minor-mode)
 
 (yas-global-mode)
 
 ;; company
+
 (global-company-mode)
 
 (defun b_load_company_sup ()
-           (company-ctags-auto-setup)
+       (company-ctags-auto-setup)
 	   (set (make-local-variable 'company-backends) '((company-files company-yasnippet company-capf company-ctags)))
 )
 
 (add-hook 'TeX-mode-hook '(lambda ()
-             (b_load_company_sup)
-      )
+       (b_load_company_sup)
+   )
 )
 (add-hook 'org-mode-hook '(lambda ()
-             (b_load_company_sup)
-      )
+       (b_load_company_sup)
+   )
 )
 (add-hook 'prog-mode-hook '(lambda ()
-	     (b_load_company_sup)
-      )
+	   (b_load_company_sup)
+   )
 )
+
+;; sh
+
+(add-to-list 'auto-mode-alist '("\\.profile$" . sh-mode))
 
 ;; julia
 
 (eglot-jl-init)
-(add-hook 'julia-mode-hook 'eglot-ensure)
+(add-hook 'julia-mode-hook '(lambda()
+	    (eglot-ensure)
+		(setq julia-indent-level 4)
+		
+   )
+)
 
 ;; TeX
 
 ;; (setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
 
 (add-hook 'TeX-mode-hook
-      '(lambda ()
+   '(lambda ()
 	 (auctex-latexmk-setup)
-
+	 (imenu-add-menubar-index)
+	 
 	 (turn-on-cdlatex)
-         (define-key cdlatex-mode-map (kbd "C-c w") #'cdlatex-tab)
+     (define-key cdlatex-mode-map (kbd "C-c w") #'cdlatex-tab)
 	 (add-hook 'cdlatex-tab-hook '(lambda()
 	   (LaTeX-indent-line)
-           (yas-expand)
+       (yas-expand)
 	 ))
          
 	 ; not work
@@ -267,7 +312,12 @@
 	   (setq eq-c-string nil)
 	   (setq eq-c-strings nil)
      )
-	 
+
+	 (defun tex-set-master-file (mafile)
+	   (interactive "masterfile: ")
+	   (print mafile)
+	   (setq TeX-macro-global 'mafile)
+	 )
 	 (defun ltxmk (TeXfile)
 	   (TeX-save-document TeXfile)
 	   (TeX-command "LatexMk" TeXfile -1)
@@ -278,6 +328,21 @@
 	   (ltxmk 'TeX-master-file)
 	 )
 
+	 (defun ltxmk-with-master (mafile)
+	   (interactive "masterfile: ")
+	   (setq tex-old-master 'TeX-master-file)
+	   (tex-set-master-file mafile)
+	   (ltxmk-master)
+	   (setq TeX-master-file 'tex-old-master)
+	 )
+
+	 (defun ltxmk-with-set-master (mafile)
+	   (interactive "masterfile: ")
+	   (setq tex-old-master 'TeX-master-file)
+	   (tex-set-master-file mafile)
+	   (ltxmk-master)
+	 )
+	 
 	 (defun ltxmk-master-v ()
 	   (interactive)
 	   (ltxmk 'TeX-master-file)
@@ -312,7 +377,10 @@
 	 ;; (local-set-key (kbd "C-c C-g C-v") 'ltxmk-master-v)
 	 (local-set-key (kbd "C-c C-g C-l") 'ltxmk-local)
 	 ;; (local-set-key (kbd "C-c C-g C-w") 'ltxmk-local-v)
-	 
+
+	 (local-set-key (kbd "C-c C-t C-a") 'tex-set-master-file)
+	 (local-set-key (kbd "C-c C-t C-f") 'ltxmk-with-master)
+
 	 (setq TeX-electric-math (cons "$" "$"))
 	 (setq LaTeX-electric-left-right-brace t)
 	 (setq TeX-insert-braces nil)
@@ -323,7 +391,11 @@
 	 (setq LaTeX-indent-level 4)
 	 (setq LaTeX-item-indent 2)
 	 (setq indent-tabs-mode t)
-         (setq LaTeX-document-regexp nil)
+     (setq LaTeX-document-regexp nil)
+
+	 (setq TeX-auto-save t)
+	 (setq TeX-parse-self t)
+	 ;(setq TeX-style-path '('(concat (getenv "TeXMFDISTPATH") "/tex")))
 	 
 	 (local-set-key (kbd "C-b C-p") 'outline-next-visible-heading)
 	 (local-set-key (kbd "C-b C-n") 'outline-previous-visible-heading)
@@ -445,44 +517,5 @@
 )
 
 (add-to-list 'auto-mode-alist '("treemacs-persist" . org-mode))
-
-;; projectile
-(projectile-mode +1)
-
-(define-key projectile-mode-map (kbd "C-c q") 'projectile-command-map)
-
-(setq projectile-enable-caching t)
-
-(projectile-register-project-type 'innercore '("make.json" "toolchain"))
-
-;; Treemacs
-(add-hook 'imenu-mode-hook (setq imenu-auto-rescan t))
-
-(use-package treemacs
-  :ensure t
-  :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  :config
-  (progn
-    (setq treemacs-wide-toggle-width 80
-	  treemacs-width 24
-	  treemacs-indentation 1
-    )
-  )
-)
-;; (add-hook 'emacs-startup-hook (message("d %s" treemacs-indentation)))
-;; (add-hook 'treemacs-mode-hook (setq treemacs-indentation 2))
-
-;; (add-hook 'emacs-startup-hook 'treemacs)
-;; (add-hook 'emacs-startup-hook 'treemacs-project-follow-mode)
-;; (add-hook 'emacs-startup-hook 'treemacs-tag-follow-mode)
-
-;; (setq treemacs-tag-follow-mode t)
-
-(use-package treemacs-projectile
-  :after (treemacs projectile)
-  :ensure t)
 
 ;;;.emacs
