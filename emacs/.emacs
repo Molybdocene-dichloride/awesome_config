@@ -497,6 +497,7 @@
   (call-rebinding-org-blank-behaviour 'org-insert-todo-heading))
 
 (add-hook 'org-mode-hook '(lambda()
+				(define-key org-mode-map (kbd "M-p") 'org-mode-restart)
 			    (define-key org-mode-map (kbd "M-RET") 'smart-org-meta-return-dwim)
 			    (setq org-refile-targets '(
 						       ("~/Desktop/org/all.org" :maxlevel . 2) ;;; All GTD
