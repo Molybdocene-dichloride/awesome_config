@@ -1,0 +1,41 @@
+# name: LaTeX preamble for Chemical Technology
+# key: ltxpct
+# --
+\\documentclass{${6:$(eq-val-d 6 "article")}}
+
+\\usepackage{import}
+ 
+\\usepackage{polyglossia}
+\\setmainlanguage{russian}
+\\setmainfont{${5:$(eq-val-d 5 "Times New Roman")}}
+
+\\usepackage{hyperref}
+
+\\hypersetup{pdftex,
+	pdfauthor={${3:$(eq-val 3)}},
+	pdftitle={${2:$(eq-val 2)}},
+	pdfsubject={${4:$(eq-val 4)}},
+	%pdfproducer={LuaHBTeX-1.13.0},
+	%pdfcreator={TeX},
+	hidelinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+
+\\usepackage{caption}
+\\usepackage{multirow}
+\\usepackage{tabularx}
+
+\\usepackage{physics}
+\\usepackage{mhchem}
+
+\\usepackage[isgt=${7:$(eq-val-d 7 "true")}]{nrfstyle}
+
+\\usepackage[style=gost-numeric, backend=biber, bibencoding=utf8]{biblatex}
+\\addbibresource{${0:$(eq-val 8)}}
+
+\\begin{document}
+	$1
+\\end{document}

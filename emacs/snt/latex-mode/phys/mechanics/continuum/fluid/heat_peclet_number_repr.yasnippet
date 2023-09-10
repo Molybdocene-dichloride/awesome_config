@@ -1,4 +1,4 @@
 # name: heat Peclet number RePr
 # key: hperp
 # --
-${4:$(eq-val-d "Pe=")}${1:$(eq-val-d "\\mathrm{Pe}")}=${2:$(eq-val-d "\\mathrm{Re}")}${3:$(eq-val-d "\\mathrm{Pr}")}
+${3:`(eq-val-d 3 "\\mathrm{Pe}=")`}${1:`(eq-val-d 1 "\\mathrm{Re}")`}${2:`(eq-val-d 2 "\\mathrm{Pr}")`} `eq-clearsyntax`

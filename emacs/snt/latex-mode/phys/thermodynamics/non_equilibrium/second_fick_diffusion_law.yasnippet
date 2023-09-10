@@ -1,4 +1,4 @@
 # name: second Fick law of diffusion
 # key: sfld
 # --
-${1:$(eq-insert-val)} = ${2:$(eq-insert-coeff-d "D")}\\laplacian $3
+${2:$(eq-val 2)} = ${3:$(eq-coeff-d 3 "D")}\\laplacian $1

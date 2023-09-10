@@ -12,7 +12,7 @@
  ;; If there is more than one, they won't work right.
  ;; '(cua-mode t nil (cua-base))
  '(diff-switches "-u")
- '(inhibit-startup-screen t)
+ '(inhibit-startup-screen t initial-buffer-choice nil)
  '(package-selected-packages
    '(use-package yasnippet-snippets yasnippet dtrt-indent cape company company-ctags cmake-mode cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref auctex auctex-latexmk cdlatex preview-latex projectile treemacs treemacs-projectile eglot eglot-jl)
  )
@@ -209,46 +209,68 @@
 	 (put 'LaTeX-narrow-to-environment 'disabled nil)
 	 (put 'narrow-to-region 'disabled nil)
 
+	 (defun add-to-listzo (adylist val)
+	   (print "add-to-listzo")
+	   (print (listp adylist))
+	   (print (length adylist))
+	   (print "frerrets")
+	   (if (> (length adylist) 1) (progn
+		   (print "car")
+		   (setcar (nthcdr 0 adylist) val)
+	   ) (progn
+		   (print "add-to-list")
+		   (add-to-list 'adylist val)
+	   ))
+	   (eval 'adylist)
+	 )
+	 
 	 (defun eq-symbs ()
            (interactive)
 	       (print "ferrets")
-           (setq eq-start-point (- (point) 2))
+           (setq eq-start-point (- (point) 2)) ; 
            (setq eq-start-symbol (string(char-after eq-start-point)))
-	   (print eq-start-point)
-	   (setq condaoi (equal eq-start-symbol "|"))
-	   (print condaoi)
-	   (if condaoi (progn
-	       (setq eq-c-point eq-start-point)
-	       (setq eq-c-symbol eq-start-symbol)
-	       (print eq-start-symbol)
-	       (print eq-c-point)
-	       (print eq-c-symbol)
-	       (setq eq-c-strings (make-list 0 "ferret"))
-	       (setq eq-c-point (- eq-c-point 1))
-	       ; (string(char-after eq-c-point))
-	       (setq eq-c-string "")
-	       (while (and (not (equal eq-c-symbol " ")) (not (equal eq-c-symbol "\t")) (not (equal eq-c-symbol "\n"))) (progn
-		     (print "while")
-	         (setq eq-c-symbol (string(char-after eq-c-point)))
-		     (print eq-c-point)
+	       (print eq-start-point)
+	       (setq condaoi (equal eq-start-symbol "|"))
+	       (print condaoi)
+	       (if condaoi (progn
+	         (setq eq-c-point eq-start-point)
+	         (setq eq-c-symbol eq-start-symbol)
+	         (print eq-start-symbol)
+	         (print eq-c-point)
 	         (print eq-c-symbol)
-		     (if (equal eq-c-symbol "|") (progn
-               (print "eq-c-string")
-	           (print eq-c-string)
-	           (add-to-list 'eq-c-strings (copy-tree eq-c-string))
-			   (setq eq-c-string "")
-			 ) (progn
-                (print "bbnn")
-			    (setq eq-c-string (concat eq-c-symbol eq-c-string))
-			 )
-		     )
-                (setq eq-c-point (- eq-c-point 1))
-	         )
-	       )
-	   ))
+
+			 (setq eq-c-strings (make-list 0 "ferret"))
+		 	 (setq eq-c-string "")
+	         
+			 (setq eq-c-points (make-list 1 (+ eq-c-point 2)))
+	         (setq eq-c-point (- eq-c-point 1))
+	         ; (string(char-after eq-c-point))
+
+			 (while (and (not (equal eq-c-symbol " ")) (not (equal eq-c-symbol "\t")) (not (equal eq-c-symbol "\n"))) (progn
+		       (print "while")
+	           (setq eq-c-symbol (string(char-after eq-c-point)))
+		       (print eq-c-point)
+	           (print eq-c-symbol)
+		       (if (equal eq-c-symbol "|") (progn
+                 (print "eq-c-string")
+	             (print eq-c-string)
+	             (add-to-list 'eq-c-strings (copy-tree eq-c-string))
+			     (setq eq-c-points (add-to-listzo eq-c-points (copy-tree (- eq-c-point 0))))
+			     (setq eq-c-string "")
+			   ) (progn
+                 (print "bbnn")
+			     (setq eq-c-string (concat eq-c-symbol eq-c-string))
+			   ))
+               (setq eq-c-point (- eq-c-point 1))
+	         ))
+		   )(progn
+			 (error "not | %s" "in (cursor - 2) position!")
+		   ))
 
 	   (print "eq-c-strings")
 	   (print eq-c-strings)
+	   (print "eq-c-points")
+	   (print eq-c-points)
      )
 
 	 (defun eq-val (idx)
@@ -308,11 +330,26 @@
        (setq eq-start-symbol nil)
 	   
 	   (setq eq-c-point nil)
+	   (setq eq-c-points nil)
+	   
 	   (setq eq-c-symbol nil)
 	   (setq eq-c-string nil)
 	   (setq eq-c-strings nil)
      )
 
+	 (defun eq-clearsyntax ()
+	   (print "clearst")
+	   (delete-region (nth 0 eq-c-points) (nth 1 eq-c-points))
+	 )
+
+	 (add-hook 'yas-before-expand-snippet-hook '(lambda()
+	   (eq-symbs)
+	 ))
+	 
+	 (add-hook 'yas-after-exit-snippet-hook '(lambda()
+		(eq-clear-symbs)
+	 ))
+	 
 	 (defun tex-set-master-file (mafile)
 	   (interactive "masterfile: ")
 	   (print mafile)
@@ -518,5 +555,7 @@
 )
 
 (add-to-list 'auto-mode-alist '("treemacs-persist" . org-mode))
+
+(kill-buffer "*scratch*")
 
 ;;;.emacs

@@ -1,4 +1,4 @@
 # name: Arrhenius equation
 # key: arreq
 # --
-${1:$(call-interactively #'eq-val-d "k=")}${2:$(call-interactively #'eq-coeff-d "A")}e^{-\\frac{${3:$(call-interactively #'eq-val-d "E")}}{${4:$(call-interactively #'eq-val-d "R")}${5:$(call-interactively #'eq-val-d "T")}}}
+${1:$(eq-val-d 1 "k=")}${2:$(eq-coeff-d 2 "A")}e^{-\\frac{${3:$(eq-val-d 3 "E")}}{${4:$(eq-val-d 4 "R")}${5:$(eq-val-d 5 "T")}}}
