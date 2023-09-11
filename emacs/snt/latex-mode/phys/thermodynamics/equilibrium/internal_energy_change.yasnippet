@@ -1,4 +1,4 @@
 # name: internal energy change
 # key: inte
 # --
-${1:$(eq-val-d "dU=")}${4:$(eq-val-d "T")}${2:$(eq-val-d "dS")}-${3:$(eq-val-d "p")}${5:$(eq-val-d "dV")}
+`(eq-symbs)`${1:`(eq-val-d 1 "dU=")`}${4:`(eq-val-d 4 "T")`}${2:`(eq-val-d 2 "dS")`}-${3:`(eq-val-d 3 "p")`}${5:`(eq-val-d 5 "dV")`}

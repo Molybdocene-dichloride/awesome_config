@@ -1,4 +1,4 @@
 # name: Helmholtz free energy
 # key: helm
 # --
-${1:$(eq-val-d "F=")}${2:$(eq-val-d "U")}-${4:$(eq-val-d "T")}${6:$(eq-val-d "S")}
+`(eq-symbs)`${1:`(eq-val-d 1 "F=")`}${2:`(eq-val-d 2 "U")`}-${4:`(eq-val-d 4 "T")`}${5:`(eq-val-d 5 "S")`}

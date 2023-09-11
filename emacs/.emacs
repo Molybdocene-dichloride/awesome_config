@@ -185,6 +185,8 @@
    )
 )
 
+(setq diary-file (concat (getenv "scidir") "/misc/nrf/nrf.dary"))
+
 ;; TeX
 
 ;; (setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
@@ -227,7 +229,8 @@
 	 (defun eq-symbs ()
            (interactive)
 	       (print "ferrets")
-           (setq eq-start-point (- (point) 2)) ; 
+		   (print yas-snippet-beg)
+           (setq eq-start-point (- (point) 2)) ; (yas-snippet-beg)
            (setq eq-start-symbol (string(char-after eq-start-point)))
 	       (print eq-start-point)
 	       (setq condaoi (equal eq-start-symbol "|"))
@@ -264,20 +267,26 @@
                (setq eq-c-point (- eq-c-point 1))
 	         ))
 		   )(progn
-			 (error "not | %s" "in (cursor - 2) position!")
+			 (print "not | in (cursor - 2) position!")
+			 (setq eq-c-strings (make-list 10 nil))
+			 (setq eq-c-points (make-list 1 0))
 		   ))
 
 	   (print "eq-c-strings")
 	   (print eq-c-strings)
 	   (print "eq-c-points")
 	   (print eq-c-points)
+	   (print "")
      )
 
 	 (defun eq-val (idx)
+	   (print "eq-val")
+	   (print (nth (- idx 1) eq-c-strings))
 	   (nth (- idx 1) eq-c-strings)
 	 )
 	 
 	 (defun eq-coeff (idx)
+	   (print "eq-coeff")
 	   (setq eq-avalue (eq-val idx))
 	   (print (length eq-avalue))
 	   (if (> (length eq-avalue) 1) (progn
@@ -299,16 +308,19 @@
 	   (if (equal eq-avalue nil) (progn
          (setq eq-avalue "")
 	   ))
-	   
+	   (print eq-avalue)
 	   (eval eq-avalue)
 	 )
 
 	 (defun eq-val-d (idx &optional default)
+	   (print "eq-val-d")
+	   (print default)
 	   (setq eq-avalue (eq-val idx))
 	   (eq-default eq-avalue default)
 	 )
 	 
 	 (defun eq-coeff-d (idx &optional default)
+	   (print "eq-coeff-d")
 	   (setq eq-avalue (eq-coeff idx))
 	   (eq-default eq-avalue default)
 	 )
@@ -339,15 +351,21 @@
 
 	 (defun eq-clearsyntax ()
 	   (print "clearst")
-	   (delete-region (nth 0 eq-c-points) (nth 1 eq-c-points))
+	   (if (and (listp eq-c-points) (length> eq-c-points 1)) (progn
+	     (delete-region (nth 0 eq-c-points) (nth 1 eq-c-points))
+	   ))
+	   (eq-clear-symbs)
 	 )
 
 	 (add-hook 'yas-before-expand-snippet-hook '(lambda()
-	   (eq-symbs)
+	   (print "bef")
+	   ;(print snippet)
+       ;(eq-symbs)
 	 ))
 	 
 	 (add-hook 'yas-after-exit-snippet-hook '(lambda()
-		(eq-clear-symbs)
+		(print "exit")
+		(eq-clearsyntax)
 	 ))
 	 
 	 (defun tex-set-master-file (mafile)
@@ -428,7 +446,7 @@
 	 (setq LaTeX-indent-level 4)
 	 (setq LaTeX-item-indent 2)
 	 (setq indent-tabs-mode t)
-     (setq LaTeX-document-regexp nil)
+     (setq LaTeX-document-regexp "")
 
 	 (setq TeX-auto-save t)
 	 (setq TeX-parse-self t)
@@ -486,7 +504,8 @@
 		(lambda nil TeX-command-extra-options)))
 
 	 ;(define-key cdlatex-mode-map (kbd "TAB") nil)
-      )
+	    (kill-buffer "*scratch*")
+	 )
 )
 
 
@@ -555,7 +574,5 @@
 )
 
 (add-to-list 'auto-mode-alist '("treemacs-persist" . org-mode))
-
-(kill-buffer "*scratch*")
 
 ;;;.emacs

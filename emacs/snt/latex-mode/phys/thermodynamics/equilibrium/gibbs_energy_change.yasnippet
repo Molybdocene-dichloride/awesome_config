@@ -1,4 +1,4 @@
 # name: Gibbs free energy change
 # key: gbbc
 # --
-${1:$(eq-val-d "dG")}=${4:$(eq-val-d "V")}${2:$(eq-val-d "dp")}-${5:$(eq-val-d "S")}${3:$(eq-val-d "dT")}
+`(eq-symbs)`${1:`(eq-val-d 1 "dG")`}=${4:`(eq-val-d 4 "V")`}${2:`(eq-val-d 2 "dp")`}-${5:`(eq-val-d 5 "S")`}${3:`(eq-val-d 3 "dT")`}
