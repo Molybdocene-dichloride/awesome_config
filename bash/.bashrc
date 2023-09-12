@@ -9,7 +9,7 @@ fi
 
 # User specific environment
 PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-PATH=$PATH:$sfdir:$sfultimdir:$sfamddir:$sfdrsdir:$sfdrsmdir:$sfdir/tmp-open:$sfdir/kubo:$sfdir/jadx/bin:$sfdir/scilab
+PATH=$PATH:~/.pipenv/bin:~/.julia/julia-1.9/bin
 export PATH
 
 export android_ndk=~/.android/android-ndk-r16b/
