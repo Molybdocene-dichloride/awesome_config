@@ -1,0 +1,4 @@
+# name: work mean speed of paper making machine
+# key: pwspeed
+# --
+`(eq-symbs)`${3:`(eq-val 1 "v")`} = \\frac{${1:`(eq-val 1 "P_\\text{н}")`}}{0,06${2:`(eq-val 1 "B")`}${4:`(eq-val 1 "m")`}${5:`(eq-val 1 "K")`}}

@@ -1,0 +1,4 @@
+# name: cylinder wall thickness
+# key: scwth
+# --
+`(eq-symbs)`${1:`(eq-val-d 1 "s")`}=\\frac{${2:`(eq-val-d 2 "D")`}${3:`(eq-val-d 3 "p")`}}{2${4:`(eq-val-d 4 "\\sigma")`}${5:`(eq-val-d 5 "2\\phi")`}-${6:`(eq-val-d 6 "p")`}}

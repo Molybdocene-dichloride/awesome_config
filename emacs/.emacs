@@ -126,6 +126,18 @@
 
 ;;YASnippet
 
+(defun eq-delete-backward-char (n) ;;only for n == 1
+  (if (not (or (equal (char-before (point)) nil) (char-equal (char-before (point)) ?\n))) (
+    (delete-backward-char n)
+  ))
+)
+
+(defun eq-delete-forward-char (n) ;;only for n == 1
+  (if (not (or (equal (char-after (point)) nil) (char-equal (char-after (point)) ?\n))) (
+    (delete-forward-char n)
+  ))
+)
+
 (add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
 
 (add-hook 'yas-minor-mode-hook
@@ -224,7 +236,7 @@
 		   (add-to-list 'adylist val)
 	   ))
 	   (eval 'adylist)
-	 )
+	   )
 	 
 	 (defun eq-symbs ()
            (interactive)
@@ -324,6 +336,42 @@
 	   (setq eq-avalue (eq-coeff idx))
 	   (eq-default eq-avalue default)
 	 )
+
+	 (defun eq-more-list (idx pattern) ;; and default val!
+	   (setq eq-op (nth ((- (length pattern) 1) pattern))
+	   (print eq-op)
+	   (if (string-match-p "[:digit:]\\W$" eq-op) (
+	     (setq eq-op nil)
+	   ))
+
+	   (setq idd 0)
+	   
+	   (while (< idd (- (length pattern) 2)) (progn
+		 (setq eq-char (nth idd pattern))
+		 (push eq-defaults eq-char)
+		 (if (string-match-p "[:digit:]\\W$" eq-char) (progn
+		   (push eq-types "eq-symbol")
+		 )(progn
+		   (push eq-types "eq-oper")
+		 ))
+		 
+		 (setq idd (1+ idd))
+	   ))
+
+	   (setq eq-str (nth (- idx 1) eq-c-strings))
+	   (setq idd 0)
+	   (while (< idd (- (length eq-str) 2)) (progn
+		 (setq eq-char (nth idd eq-str))
+         
+		 (if (char-equal eq-char 32) (progn
+		   (push eq-val (nth idd eq-defaults))
+		 )(progn
+		   (push eq-val eq-char)
+		 ))
+         
+		 (setq idd (2+ idd))
+	   ))
+	 )
 	 
 	 (defun eq-vall ()
 	   (interactive)
@@ -356,7 +404,7 @@
 	   ))
 	   (eq-clear-symbs)
 	 )
-
+	 
 	 (add-hook 'yas-before-expand-snippet-hook '(lambda()
 	   (print "bef")
 	   ;(print snippet)

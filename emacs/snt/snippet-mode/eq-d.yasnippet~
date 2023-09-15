@@ -1,0 +1,4 @@
+# name: empty run power
+# key: ppmemrp
+# --
+${1:`(eq-val-d 1 "N_{\\text{Х.Х}}=")`}
