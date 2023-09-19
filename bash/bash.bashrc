@@ -9,22 +9,28 @@ if [ -n "$TERMUX_APK_RELEASE" ]; then
 fi
 
 if ! [ -n "$TERMUX_APK_RELEASE" ]; then #To Do
+   export IPFS_PATH=/var/.ipfs
+
    export TEXMFROOT=/opt/texlive
    
    export TeXLivePATH=$TEXMFROOT
 
-   export PATH=$PATH:$TeXLivePATH/bin/x86_64-linux/
+   export PATH=$PATH:$TeXLivePATH/bin/x86_64-linux
 
    export MANPATH=$MANPATH:$TeXMFDISTPATH/doc/man
 
    export INFOPATH=$INFOPATH:$TeXMFDISTPATH/doc/info
 else
    export TeXLivePATH=$TEXMFROOT
+   export pseudoroot=~/..
 fi
 
 export TeXMFDISTPATH=$TeXLivePATH/texmf-dist
 
 export AsyPATH=$TeXMFDISTPATH/asymptote
+
+export sfipfdir=$pseudoroot/opt/kubo
+export PATH=$PATH:$sfipfdir
 
 #export PATH=:$PATH:~/.luarocks/bin
 #export LUA_PATH='/usr/share/lua/5.4/?.lua;/usr/share/lua/5.4/?/init.lua;/usr/lib/lua/5.4/?.lua;/usr/lib/lua/5.4/?/init.lua;./?.lua;./?/init.lua;~/.luarocks/share/lua/5.4/?.lua;~/.luarocks/share/lua/5.4/?/init.lua'

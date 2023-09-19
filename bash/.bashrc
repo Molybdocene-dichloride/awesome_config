@@ -12,7 +12,9 @@ PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 PATH=$PATH:~/.pipenv/bin:~/.julia/julia-1.9/bin
 export PATH
 
-export android_ndk=~/.android/android-ndk-r16b/
+export android_ndk=~/.android/android-ndk-r16b
+
+export JULIA_LOAD_PATH=$JULIA_LOAD_PATH:$prmisdir:$prmisdir/machs:$prmisdir/general
 export PYTHONPATH=$PYTHONPATH:~/software/tmp-open
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 
