@@ -1,0 +1,11 @@
+#!/sbin/openrc-run
+
+pidfile=/run/ipfs.pid
+command=/opt/kubo/ipfs
+command_args="daemon --enable-gc"
+#command_user=ipfs:ipfs
+start_stop_daemon_args="-b"
+
+#depend() {
+#	need net
+#}

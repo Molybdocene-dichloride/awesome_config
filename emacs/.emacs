@@ -10,13 +10,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- ;; '(cua-mode t nil (cua-base))
  '(diff-switches "-u")
- '(inhibit-startup-screen t initial-buffer-choice nil)
+ '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(use-package yasnippet-snippets yasnippet dtrt-indent cape company company-ctags cmake-mode cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref auctex auctex-latexmk cdlatex preview-latex projectile treemacs treemacs-projectile eglot eglot-jl)
- )
-)
+   '(julia-mode use-package yasnippet-snippets yasnippet dtrt-indent cape company company-ctags cmake-mode cmake-project flycheck tree-sitter-langs tree-sitter reverse-im toml lua-mode org-ref auctex auctex-latexmk cdlatex preview-latex projectile treemacs treemacs-projectile eglot eglot-jl)))
 
 ;;; uncomment for CJK utf-8 support for non-Asian users
 ;; (require 'un-define)
@@ -66,7 +63,12 @@
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "C-z")   'undo-fu-only-undo)
 (global-set-key (kbd "C-A-z") 'undo-fu-only-redo)
+
 (put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+
+(add-hook 'after-init-hook #'electric-pair-mode)
 
 ;; flycheck
 
@@ -191,13 +193,14 @@
 
 (eglot-jl-init)
 (add-hook 'julia-mode-hook '(lambda()
-	    (eglot-ensure)
+		(eglot-ensure)
 		(setq julia-indent-level 4)
+		(setq indent-tabs-mode t)
 		
    )
 )
 
-(setq diary-file (concat (getenv "scidir") "/misc/nrf/nrf.dary"))
+(setq diary-file (concat (getenv "scidir") "/misc/nrf/nrf.dar"))
 
 ;; TeX
 
@@ -221,7 +224,6 @@
 	 
 	 (put 'TeX-narrow-to-group 'disabled nil)
 	 (put 'LaTeX-narrow-to-environment 'disabled nil)
-	 (put 'narrow-to-region 'disabled nil)
 
 	 (defun add-to-listzo (adylist val)
 	   (print "add-to-listzo")
@@ -337,51 +339,108 @@
 	   (eq-default eq-avalue default)
 	 )
 
-	 (defun eq-more-list (idx pattern) ;; and default val!
-	   (setq eq-op (nth ((- (length pattern) 1) pattern))
+	 (defun nthss (start str)
+	   (substring str start (+ start 1))
+	 )
+	 
+	 (defun eq-more-list (idx pattern) ;; and default!
+	   (print "eq-more-list")
+	   (print pattern)
+	   ;(print (substring pattern (length pattern)))
+	   (setq eq-op (nthss (- (length pattern) 1) pattern))
 	   (print eq-op)
-	   (if (string-match-p "[:digit:]\\W$" eq-op) (
-	     (setq eq-op nil)
-	   ))
-
-	   (setq idd 0)
+	   (if (string-match-p "[[:alnum:]]" eq-op) (setq eq-op " "))
+	   (print "operator symbs")
+	   (print eq-op)
 	   
-	   (while (< idd (- (length pattern) 2)) (progn
-		 (setq eq-char (nth idd pattern))
-		 (push eq-defaults eq-char)
-		 (if (string-match-p "[:digit:]\\W$" eq-char) (progn
-		   (push eq-types "eq-symbol")
+	   (setq idd 0)
+
+	   (setq eq-t-s "eq-symbol")
+	   (setq eq-t-o "eq-oper")
+	   (setq eq-defaults (make-list 0 "ferret"))
+	   (setq eq-types (make-list 0 "ferret"))
+
+	   (print "other symbs")
+		 
+	   (while (<= idd (- (length pattern) 1)) (progn
+		 (setq eq-char (nthss idd pattern))
+		 (setq eq-chr (copy-tree eq-char))
+		 (print (type-of eq-char))
+		 (print eq-char)
+		 (add-to-list 'eq-defaults eq-chr t '(lambda (a1 a2) nil))
+		 (print "eq-char")
+		 (if (string-match-p "[[:alnum:]]" eq-char) (progn
+		   (add-to-list 'eq-types eq-t-s t '(lambda (a1 a2) nil)) ; a+b+c+d
+		   (print "t-s")
 		 )(progn
-		   (push eq-types "eq-oper")
+		   (add-to-list 'eq-types eq-t-o t '(lambda (a1 a2) nil))
+		   (print "t-o")
 		 ))
+		 (print "eq-chars")
 		 
 		 (setq idd (1+ idd))
 	   ))
 
+	   (print "def, typs")
+	   (print eq-defaults)
+	   (print eq-types)
+
+	   (print "str")
 	   (setq eq-str (nth (- idx 1) eq-c-strings))
+	   (print eq-str)
+
+	   (setq eq-val "")
 	   (setq idd 0)
-	   (while (< idd (- (length eq-str) 2)) (progn
-		 (setq eq-char (nth idd eq-str))
-         
-		 (if (char-equal eq-char 32) (progn
-		   (push eq-val (nth idd eq-defaults))
-		 )(progn
-		   (push eq-val eq-char)
-		 ))
-         
-		 (setq idd (2+ idd))
+	   (setq j 0)
+	   (print "eq-while")
+	   (print (length eq-str))
+	   (print (length eq-defaults))
+	   (while (< idd (length eq-str)) (progn
+		 (print "eq-str")
+		 (setq eq-char (nthss idd eq-str))
+		 (print eq-char)
+		 (setq eq-od (copy-tree eq-char))
+		 (print eq-od)
+		 (if (< j (length eq-defaults)) (progn
+			 (print "part")
+			 (print j)
+			 (if (string= eq-char ",") (progn
+			   (print ",, new element")
+			   (setq j (1+ j))
+			   (if (not eq-notzero) (progn
+			     (setq eq-val (concat eq-val (nth (1- j) eq-defaults)))
+				 
+			   )
+			   (setq eq-notzero nil)
+			   (setq eq-val (concat eq-val (nth j eq-defaults)))
+			   (print j)
+			   (print eq-val)
+			   (setq j (1+ j))
+		     ) (progn
+			   (print "symbol")
+			   (setq eq-val (concat eq-val eq-od))
+			   (setq eq-notzero t)
+		     ))
+		   ) (progn
+			 (setq j 0)
+			 (print "operator, new part")
+			 (setq eq-val (concat eq-val eq-char))
+			 (print eq-val)
+		   )
+		 )
+		 
+		 (setq idd (1+ idd))
 	   ))
+
+	   (print "eq-val")
+	   (print eq-val)
 	 )
 	 
 	 (defun eq-vall ()
 	   (interactive)
-	   (print (eq-coeff 1))
-	   (print (eq-coeff 2))
-	   (print (eq-coeff 3))
-
-	   (print (eq-coeff-d 1 "\\Delta"))
-	   (print (eq-coeff-d 2))
-	   (print (eq-coeff-d 3 "\\Delta")) ; \\rho
+	   (eq-symbs)
+	   (print (eq-more-list 1 "a+"))
+	   (print (eq-more-list 1 "a+b+"))
 	 )
 	 
 	 (defun eq-clear-symbs ()
@@ -552,7 +611,7 @@
 		(lambda nil TeX-command-extra-options)))
 
 	 ;(define-key cdlatex-mode-map (kbd "TAB") nil)
-	    (kill-buffer "*scratch*")
+	 ;(kill-buffer "*scratch*")
 	 )
 )
 
@@ -601,6 +660,7 @@
   (call-rebinding-org-blank-behaviour 'org-insert-todo-heading))
 
 (add-hook 'org-mode-hook '(lambda()
+				(setq truncate-lines nil)
 				(define-key org-mode-map (kbd "M-p") 'org-mode-restart)
 			    (define-key org-mode-map (kbd "M-RET") 'smart-org-meta-return-dwim)
 			    (setq org-refile-targets '(
