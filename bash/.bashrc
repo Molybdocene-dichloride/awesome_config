@@ -24,7 +24,7 @@ export XDG_RUNTIME_DIR=/run/user/$(id -u)
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 
-[ -n "PS1" ] && [ -t 2 ] && clear
+# [ -n "PS1" ] && [ -t 2 ] && clear
 [ -n "PS1" ] && [ -t 2 ] && echo -n -e "\033[6 q"
 
 # User specific aliases and functions

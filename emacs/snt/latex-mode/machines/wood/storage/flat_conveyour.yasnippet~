@@ -1,0 +1,4 @@
+# name: chain conveyour performance
+# key: wsccperf
+# --
+`(eq-symbs)`${3:`(eq-val-d 3 "P_{fc}=")`}3600⋅F⋅v

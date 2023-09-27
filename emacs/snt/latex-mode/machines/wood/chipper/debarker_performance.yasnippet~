@@ -1,0 +1,4 @@
+# name: wood count
+# key: wswc
+# --
+`(eq-symbs)`(900 * Vdd * Ldd * γdd * dlog * kdd * φdd)/А

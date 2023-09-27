@@ -93,8 +93,13 @@
 (projectile-mode +1)
 (define-key projectile-mode-map (kbd "C-c q") 'projectile-command-map)
 (setq projectile-enable-caching t)
-(projectile-register-project-type 'innercore '("make.json" "toolchain"))
+(projectile-register-project-type 'innercore-prj '("make.json" "toolchain"))
+; (projectile-register-project-type 'julia-prj '("*.jl"))
 
+(defun prj-get ()
+  (interactive)
+  (print projectile-project-types)
+)
 ;; Treemacs
 
 (add-hook 'imenu-mode-hook (setq imenu-auto-rescan t))
@@ -129,13 +134,13 @@
 ;;YASnippet
 
 (defun eq-delete-backward-char (n) ;;only for n == 1
-  (if (not (or (equal (char-before (point)) nil) (char-equal (char-before (point)) ?\n))) (
+  (if (not (or (equal (char-before (point)) nil) (char-equal (char-before (point)) ?\n))) (progn
     (delete-backward-char n)
   ))
 )
 
 (defun eq-delete-forward-char (n) ;;only for n == 1
-  (if (not (or (equal (char-after (point)) nil) (char-equal (char-after (point)) ?\n))) (
+  (if (not (or (equal (char-after (point)) nil) (char-equal (char-after (point)) ?\n))) (progn
     (delete-forward-char n)
   ))
 )
@@ -189,6 +194,17 @@
 
 (add-to-list 'auto-mode-alist '("\\.profile$" . sh-mode))
 
+(defun insertln (str)
+	(insert (concat str "\n"))
+)
+
+(defun outbuff(bfname jl-cmdd shc)
+  (with-current-buffer (get-buffer-create bfname)
+    (insertln (concat "!" bfname " buffer"))
+	(insertln (concat "command: " jl-cmdd "\n"))
+	(insert shc)
+  )
+)
 ;; julia
 
 (eglot-jl-init)
@@ -196,6 +212,17 @@
 		(eglot-ensure)
 		(setq julia-indent-level 4)
 		(setq indent-tabs-mode t)
+		(setq projectile-project-type 'julia-prj)
+		(defun jl-projectile-run-project ()
+		  (interactive)
+		  ;(setq jl-cmdd (make-list 0 "ferret"))
+		  (setq jl-cmdd (format "julia %s" (buffer-file-name (window-buffer (minibuffer-selected-window)))))
+		  ;(add-to-list 'jl-cmdd (buffer-file-name (window-buffer (minibuffer-selected-window))) t '(lambda (a1 a2) nil))
+		  (print jl-cmdd)
+		  (setq shc (shell-command-to-string jl-cmdd))
+		  (print shc)
+		  (outbuff "jl-output" jl-cmdd shc)		  
+		)
 		
    )
 )
@@ -205,6 +232,10 @@
 ;; TeX
 
 ;; (setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/texlive/bin/x86_64-linux/"))
+
+(defun nthss (start str)
+  (substring str start (+ start 1))
+)
 
 (add-hook 'TeX-mode-hook
    '(lambda ()
@@ -339,15 +370,11 @@
 	   (eq-default eq-avalue default)
 	 )
 
-	 (defun nthss (start str)
-	   (substring str start (+ start 1))
-	 )
-	 
-	 (defun eq-more-list (idx pattern) ;; and default!
+	 (defun eq-more-list (idx pattern) ;; pattern is default value
 	   (print "eq-more-list")
 	   (print pattern)
 	   ;(print (substring pattern (length pattern)))
-	   (setq eq-op (nthss (- (length pattern) 1) pattern))
+	   (seqq eq-op (nthss (- (length pattern) 1) pattern))
 	   (print eq-op)
 	   (if (string-match-p "[[:alnum:]]" eq-op) (setq eq-op " "))
 	   (print "operator symbs")
@@ -392,6 +419,7 @@
 	   (setq eq-val "")
 	   (setq idd 0)
 	   (setq j 0)
+	   (setq eq-notzero nil)
 	   (print "eq-while")
 	   (print (length eq-str))
 	   (print (length eq-defaults))
@@ -402,32 +430,47 @@
 		 (setq eq-od (copy-tree eq-char))
 		 (print eq-od)
 		 (if (< j (length eq-defaults)) (progn
-			 (print "part")
-			 (print j)
-			 (if (string= eq-char ",") (progn
-			   (print ",, new element")
-			   (setq j (1+ j))
-			   (if (not eq-notzero) (progn
-			     (setq eq-val (concat eq-val (nth (1- j) eq-defaults)))
-				 
-			   )
-			   (setq eq-notzero nil)
+           (print "part")
+		   (print j)
+		   (if (string= eq-char ",") (progn
+		     (print "operator, new element")
+			 (if (not eq-notzero) (progn
 			   (setq eq-val (concat eq-val (nth j eq-defaults)))
-			   (print j)
-			   (print eq-val)
-			   (setq j (1+ j))
-		     ) (progn
-			   (print "symbol")
-			   (setq eq-val (concat eq-val eq-od))
-			   (setq eq-notzero t)
-		     ))
-		   ) (progn
-			 (setq j 0)
-			 (print "operator, new part")
-			 (setq eq-val (concat eq-val eq-char))
+				 
+			 ))
+			 (setq eq-notzero nil)
+			 (setq j (1+ j))
+
+			 (setq jdef (nth j eq-defaults))
+			 (if (string= jdef "\\") (progn
+               (print "bigger operator")
+			   (while (not (string= (nth j eq-defaults) " "))
+			     (setq eq-val (concat eq-val (nth j eq-defaults)))
+				 (setq j (1+ j))
+				 (print j)
+				 (print eq-val)
+			   )
+			 ) (progn
+			   (print "smal operator")
+			   
+			 ))
+			 
+			 (setq eq-val (concat eq-val (nth j eq-defaults)))
+			 (print j)
 			 (print eq-val)
-		   )
-		 )
+			 (setq j (1+ j))
+		   ) (progn
+	         (print "symbol")
+			 (setq eq-val (concat eq-val eq-char))
+			 (setq eq-notzero t)
+			   
+		   ))
+		 ) (progn
+		   (setq j 0)
+		   (print "operator, new part")
+		   (setq eq-val (concat eq-val eq-char))
+		   (print eq-val)
+		 ))
 		 
 		 (setq idd (1+ idd))
 	   ))
@@ -439,8 +482,8 @@
 	 (defun eq-vall ()
 	   (interactive)
 	   (eq-symbs)
-	   (print (eq-more-list 1 "a+"))
-	   (print (eq-more-list 1 "a+b+"))
+	   (print (eq-more-list 1 "a∪"))
+	   (print (eq-more-list 1 "a\\union b∪"))
 	 )
 	 
 	 (defun eq-clear-symbs ()
