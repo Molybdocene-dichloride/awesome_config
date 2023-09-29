@@ -1,0 +1,4 @@
+# name: settling rate in clarifier
+# key: clsr
+# --
+`(eq-symbs)`L = v*k / (k * (u0 - omega))

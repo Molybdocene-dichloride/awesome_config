@@ -1,0 +1,4 @@
+# name: water rate
+# key: clv
+# --
+`(eq-symbs)`v = qmax / (n * H * B)

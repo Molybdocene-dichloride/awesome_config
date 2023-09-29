@@ -1,0 +1,4 @@
+# name: n2
+# key: cln2
+# --
+`(eq-symbs)`${3:`(eq-val-d 3 "qmax=")`}${1:`(eq-val-d 1 "q_{m}")`}*${2:`(eq-coeff-d 2 "K_{ne}")`}

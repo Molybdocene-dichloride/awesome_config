@@ -133,14 +133,20 @@
 
 ;;YASnippet
 
+(defun eq-braces-equ(chr)
+  (or (char-equal chr ?( ) (char-equal chr ?) ) (char-equal chr ?{ ) (char-equal chr ?} ))
+)
+
 (defun eq-delete-backward-char (n) ;;only for n == 1
-  (if (not (or (equal (char-before (point)) nil) (char-equal (char-before (point)) ?\n))) (progn
+  (setq charn (char-before (point)))
+  (if (not (or (equal charn nil) (char-equal charn ?\n) (char-equal charn ?^) (eq-braces-equ charn))) (progn
     (delete-backward-char n)
   ))
 )
 
 (defun eq-delete-forward-char (n) ;;only for n == 1
-  (if (not (or (equal (char-after (point)) nil) (char-equal (char-after (point)) ?\n))) (progn
+  (setq charn (char-before (point)))
+  (if (not (or (equal charn nil) (char-equal charn ?\n) (char-equal charn ?^) (eq-braces-equ charn))) (progn
     (delete-forward-char n)
   ))
 )
@@ -200,7 +206,8 @@
 
 (defun outbuff(bfname jl-cmdd shc)
   (with-current-buffer (get-buffer-create bfname)
-    (insertln (concat "!" bfname " buffer"))
+    (erase-buffer)
+	(insertln (concat "!" bfname " buffer"))
 	(insertln (concat "command: " jl-cmdd "\n"))
 	(insert shc)
   )

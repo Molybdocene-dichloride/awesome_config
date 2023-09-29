@@ -1,0 +1,4 @@
+# name: clarifier width
+# key: clwith
+# --
+`(eq-symbs)`B = ceil(qmax / (n * H * v))
